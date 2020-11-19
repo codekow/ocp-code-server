@@ -1,0 +1,8 @@
+# oc patch dc custom-code-server -p "$(cat gpu-node-taint-patch.yml)"
+---
+spec:
+  template:
+    spec:
+      tolerations:
+      - key: taint
+        value: gpu
