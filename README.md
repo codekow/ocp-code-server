@@ -2,9 +2,7 @@
 
 ## Intro
 
-This project hopes to make it easy to get developers up and running quickly in OCP.
-
-This build takes the existing work found @ <https://github.com/cdr/Code Server> and
+This repository takes the existing work found @ https://github.com/cdr/code-server and
 adapts it to run on OpenShift.
 
 ## Quick Start
@@ -12,11 +10,14 @@ Deploy a Custom Code Server (w/ custom build)
 
 `Add to Project` => `Import YAML / JSON`
 
-For Code Server with WebDav use [deploy-Code Server-template.yml](openshift/templates/deploy-Code Server-template.yml).
+Use [deploy-code-server-no-webdav-template.yml](openshift/templates/deploy-code-server-no-webdav-template.yml).
 
 ### Demo Route
 
-Test any app on 0.0.0.0 and port 8080. Run the following in the terminal of code server:
+A demo route is configured to test any app on 0.0.0.0 and port 8080.
+This is the default for most [source-to-image (s2i)](https://github.com/sclorg/s2i-python-container) builds.
+
+Run the following in the terminal of code server:
 
 ```sh
 # basic python example
@@ -25,6 +26,8 @@ python -m http.server 8080
 ```
 
 ### WebDav
+
+TODO
 - Username: **coder**
 - Password: **[password]**
 
