@@ -1,0 +1,1522 @@
+coder/Chart.yaml
+description: Run Coder in Kubernetes
+name: coder
+type: application
+version: 1.10.1
+# environments. By default the storageClassName is not specified and thus the
+# default StorageClass is used.
+#
+# NOTE: If storageClassName is not specified and a default StorageClass does
+# not exist, then the deployment will fail. The storageClass MUST support the
+# ReadWriteOnce access mode.
+storageClassName: ""
+# See the following for the different serviceType options and their use:
+# https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services-service-types
+serviceType: "ClusterIP"
+# podSecurityPolicyName is the name of the pod security policy to apply to all
+# Coder services and user environments. The optional ingress has its own field
+# for pod security policy.
+podSecurityPolicyName: ""
+# If you've set a custom default domain for your cluster, you may need to
+# remove or change this DNS suffix for service resolution to work correctly.
+clusterDomainSuffix: ".svc.cluster.local"
+# ingress contains configuration for the bundled ingress controller.
+ingress:
+  # useDefault set to true will deploy an nginx ingress that will allow you to
+  # access Coder from an external IP address if your kubernetes cluster is
+  # configured to provision external IP addresses. If you would like to bring
+  # your own ingress and hook Coder into that instead, set this value to false.
+  useDefault: true
+  # This is the hostname to use for accessing the platform. This can be left blank
+  # and the user can still access the platform from the external IP or a DNS name
+  # that resolves to the external IP address.
+  host: ""
+  # podSecurityPolicyName is the name of the pod security policy the built in
+  # ingress controller should abide. It should be noted that the ingress
+  # controller requires the NET_BIND_SERVICE capability, privilege escalation,
+  # and access to privileged ports to successfully deploy.
+  podSecurityPolicyName: ""
+  # additionalAnnotations are the additional annotations to be used when creating
+  # the ingress. These can be used to specify certificate issuers or other cloud
+  # provider specific integrations. 
+  #
+  # Annotations are provided as strings e.g. [ "mykey:myvalue", "mykey2:myvalue2" ] 
+  additionalAnnotations: []
+  # tls are the TLS options for the ingress. The hosts used for the tls configuration
+  # come from the ingress.host and the devurls.host variables. If those don't exist,
+  # then the TLS configuration will be ignored.
+  tls:
+    # enable enables the tls configuration.
+    enable: false
+    # hostSecretName is the secret to use for the ingress.host hostname.
+    hostSecretName: ""
+    # devurlsHostSecretName is the secret to use for the devurls.host hostname.
+    devurlsHostSecretName: ""
+devurls:
+  # host should be a wildcard hostname to allow
+  # matching against custom-created dev URLs.
+  # Not setting 'host' results in devurls being disabled.
+  host: ""
+# postgres contains fields related to the Postgres backend.
+# If providing your own instance, a minimum version of Postgres 11 is required.
+postgres:
+  # useDefault set to true will deploy an internal Postgres instance alongside
+  # the platform. It is not recommended to run the internal Postgres instance
+  # in production. If true, all other values are ignored.
+  useDefault: true
+  # host is the host of the postgres instance.
+  host: ""
+  # port is the port that Postgres is listening on.
+  port: ""
+  # user is the user to connect to Postgres with.
+  user: ""
+  # database is the name of the database to connect to.
+  database: ""
+  # passwordSecret is the name of an existing secret in the current namespace
+  # with the password to the Postgres instance. The password must be contained
+  # in the field 'password'. Password is should be empty if the user does not 
+  # require a password to connect.
+  passwordSecret: ""
+  # sslMode determines how the connection is made to the database. The acceptable
+  # values are: disable, allow, prefer, require, verify-ca, and verify-full. Defaults
+  # to 'require'.
+  sslMode: "require"
+# imagePullPolicy sets the policy for pulling a container image across all
+# services.
+imagePullPolicy: Always
+# cemanager contains configuration the REST API handling CRUD operations
+# to the platform.
+cemanager:
+  # The number of replicas to run of the manager.
+  replicas: 1
+  image: docker.io/coderenvs/coder-service:1.10.1
+  # resources contains k8s requests and limits for the cemanager container.
+  # To unset a value, set it to "".
+  # To unset all values, you can provide a values.yaml file which sets resources
+  # to nil. E.g:
+  #
+  # cemanager:
+  #   # This will cause all values to be unset.
+  #   resources:
+  #   replica: 1
+  #
+  resources:
+    requests:
+      cpu: "250m"
+      memory: "512Mi"
+    limits:
+      cpu: "250m"
+      memory: "512Mi"
+# envproxy contains configuration for the service handling long-lived
+# connections to environments such as IDE or shell sessions.
+envproxy:
+  # The number of replicas to run of the envproxy.
+  replicas: 1
+  image: docker.io/coderenvs/coder-service:1.10.1
+  # resources contains k8s requests and limits for the envproxy container.
+  # To unset a value, set it to "".
+  # To unset all values, you can provide a values.yaml file which sets resources
+  # to nil. E.g:
+  #
+  # envproxy:
+  #   # This will cause all values to be unset.
+  #   resources:
+  #   replica: 1
+  #
+  resources:
+    requests:
+      cpu: "250m"
+      memory: "512Mi"
+    limits:
+      cpu: "250m"
+      memory: "512Mi"
+# envwatcher contains configuration for the service handling environment
+# stats.
+envwatcher:
+  image: docker.io/coderenvs/coder-service:1.10.1
+  # resources contains k8s requests and limits for the envwatcher container.
+  # To unset a value, set it to "".
+  # To unset all values, you can provide a values.yaml file which sets resources
+  # to nil. E.g:
+  #
+  # envwatcher:
+  #   # This will cause all values to be unset.
+  #   resources:
+  #   image: "some image"
+  #
+  resources:
+    requests:
+      cpu: "250m"
+      memory: "512Mi"
+    limits:
+      cpu: "1000m"
+      memory: "512Mi"
+# timescale contains configuration for the internal database. It is not recommended
+# to run this service in production. See the Postgres stanza.
+timescale:
+  image: docker.io/coderenvs/timescale:1.10.1
+  # resources contains k8s requests and limits for the timescale container.
+  # To unset a value, set it to "".
+  # To unset all values, you can provide a values.yaml file which sets resources
+  # to nil. E.g:
+  #
+  # timescale:
+  #   # This will cause all values to be unset.
+  #   resources:
+  #   replica: 1
+  #
+  resources:
+    requests:
+      cpu: "250m"
+      memory: "1Gi"
+      # storage specifies the size of the volume claim for persisting the database.
+      storage: "10Gi"
+    limits:
+      cpu: "250m"
+      memory: "1Gi"
+dockerd:
+  image: docker.io/coderenvs/dockerd:1.10.1
+envbuilder:
+  image: docker.io/coderenvs/envbuilder:1.10.1
+# environments defines configuration that is applied to all
+# user environments. 
+environments:
+  # tolerations are applied to all user environments. Each element
+  # is a regular pod toleration object. To set service tolerations see
+  # serviceTolerations.
+  # e.g.
+  # tolerations:
+  # - key: "my key"
+  #   operator: "Exists"
+  #   effect: "NoExecute"
+  #   tolerationSeconds: 6000
+  tolerations: []
+# certs describes CAs that should be added to Coder services. 
+# These certs are NOT added to environments.
+certs:
+  # secret is the kubernetes secret that holds the CAs that should
+  # be added to Coder services.
+  secret:
+    # name is the name of the secret.
+    name: ""
+    # key is the key in the secret pointing to the certificate
+    # bundle.
+    key: ""
+# namespaceWhitelist is a list of additional namespaces that environments may be deploy to.
+namespaceWhitelist: []
+# DEPRECATED: autooff has been moved to an organization level option
+# configurable in the dashboard.
+# This field will be removed in the minor release 1.9.0
+autooff:
+  # enable=true will automatically turn off environments that have
+  # been idle for a configurable number of hours.
+  enable: true
+ssh:
+  # enable=false will disable SSH for accessing environments
+  enable: true
+# serviceTolerations are applied to all Coder managed services. Each element
+# is a toleration object. To set user environment tolerations see
+# environments.tolerations.
+# e.g.
+# serviceTolerations:
+# - key: "my key"
+#   operator: "Exists"
+#   effect: "NoExecute"
+#   tolerationSeconds: 6000
+serviceTolerations: []
+# logging configures the logging format of Coder services
+logging:
+  # human logs are formatted for readability by a human
+  human: /dev/stderr
+  stackdriver: ""
+  json: ""
+ coder/templates/_cemanager.tpl                                                                      0000644 0000000 0000000 00000005123 13721546556 015157  0                                                                                                    ustar 00                                                                0000000 0000000                                                                                                                                                                        {{/*
+  coder.cemanager.roles creates a role for every valid namespace to provide
+  cemanager the necessary permissionse to administer environments.
+*/}}
+{{- define "coder.cemanager.roles" }}
+{{- $namespaces := append .Values.namespaceWhitelist .Release.Namespace }}
+{{- range $namespaces }}
+---
+# The roles the manager needs in the environments
+# namespace in order to administer pods.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: cemanager
+  namespace: {{ . | quote }}
+rules:
+  - apiGroups:
+      - "" # indicates the core API group
+      - "apps"
+    resources:
+        # Every environment deployment has a service.
+      - services
+      - pods
+        # Required for creating registry pull secrets.
+      - secrets
+        # Required for the code-server volume and the environments' home volumes.
+      - persistentvolumeclaims
+        # Required for legacy reasons.
+      - statefulsets
+        # Every environment is a deployment.
+      - deployments
+    verbs:
+      - create
+      - get
+      - list
+      - watch
+      - update
+      - patch
+      - delete
+      - deletecollection
+  - apiGroups:
+      - "" # indicates the core API group
+    resources:
+      - pods/exec
+      - pods/log
+      - events
+      - configmaps
+    verbs:
+      - create
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - "apps"
+    resources:
+      # Required for legacy reasons.
+      - statefulsets/scale
+      # Auto-off requires being able to update the
+      # replicas of a deployment from 1 to 0.
+      - deployments/scale
+    verbs:
+      - update
+  - apiGroups:
+      - metrics.k8s.io
+    resources:
+      - pods
+    # Necessary for gathering stats about an environment.
+    verbs:
+      - list
+      - get
+  - apiGroups:
+      - networking.k8s.io
+    resources:
+        # Necessary for preventing inter-environment communication.
+      - networkpolicies
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+{{- end }}
+{{- end }}
+{{/*
+  coder.cemanager.rolebindings creates a
+  role binding for every namespace in the list
+  to allow cemanager permissions to create environments
+  in the additional namespaces
+*/}}
+{{- define "coder.cemanager.rolebindings" }}
+{{ $namespaces := append .Values.namespaceWhitelist .Release.Namespace }}
+{{- range $namespaces }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  namespace: {{ . | quote }}
+  name: cemanager
+subjects:
+  - kind: ServiceAccount
+    name: cemanager
+    namespace: {{ $.Release.Namespace | quote }}
+roleRef:
+  kind: Role
+  name: cemanager
+  apiGroup: rbac.authorization.k8s.io
+{{- end }}
+{{- end }}
+                                                                                                                                                                                                                                                                                                                                                                                                                                             coder/templates/_common.tpl                                                                         0000644 0000000 0000000 00000005235 13721546556 014531  0                                                                                                    ustar 00                                                                0000000 0000000                                                                                                                                                                        {{/* 
+	coder.storageClassName adds a storageClassName field to a volume claim
+	if the 'storageClassName' value is non-empty.
+*/}}
+{{- define "coder.storageClassName" }}
+{{- if ne .Values.storageClassName "" }}
+storageClassName: {{ .Values.storageClassName | quote }}
+{{- end }}
+{{- end }}
+{{/*
+  coder.devurls.hostEnv adds an environment variable indicating
+  the dev URL host.
+*/}}
+{{- define "coder.devurls.hostEnv" }}
+{{- if ne .Values.devurls.host "" }}
+- name: "DEVURL_DOMAIN"
+  value: {{ .Values.devurls.host | quote }}
+{{- end }}
+{{- end }}
+{{/*
+  coder.postgres.env adds environment variables that
+  specify how to connect to a Postgres instance.
+*/}}
+{{- define "coder.postgres.env" }}
+{{- if eq .Values.postgres.useDefault true }}
+- name: DB_HOST
+  value: timescale.{{ .Release.Namespace }}{{ .Values.clusterDomainSuffix}}
+- name: DB_PORT
+  value: "5432"
+- name: DB_USER
+  value: coder
+- name: DB_NAME
+  value: coder
+- name: DB_SSL_MODE
+  value: disable
+{{- else }}
+- name: DB_HOST
+  value: {{ .Values.postgres.host | quote }}
+- name: DB_PORT
+  value: {{ .Values.postgres.port | quote }}
+- name: DB_USER
+  value: {{ .Values.postgres.user | quote }}
+- name: DB_SECRET
+  value: {{ .Values.postgres.passwordSecret | quote }}
+- name: DB_SSL_MODE
+  value: {{ .Values.postgres.sslMode | quote }}
+- name: DB_NAME
+  value: {{ .Values.postgres.database | quote }}
+{{- end }}
+{{- end }}
+{{/*
+  coder.namespaceWhitelist provides an environment variable
+  that lists available namespaces for environment creation.
+*/}}
+{{- define "coder.namespaceWhitelist.env" }}
+{{- if .Values.namespaceWhitelist }}
+- name: NAMESPACE_WHITELIST
+  value: {{ join "," .Values.namespaceWhitelist | quote }}
+{{- end }}
+{{- end }}
+{{/* 
+  coder.volumes adds a volumes stanza if a cert.secret is provided.
+*/}}
+{{- define "coder.volumes" }}
+{{- if .Values.certs.secret.name }}
+volumes:
+{{- end }}
+{{- if .Values.certs.secret.name }}
+  - name: {{ .Values.certs.secret.name | quote }}
+    secret:
+      secretName: {{ .Values.certs.secret.name | quote }}
+{{- end }}
+{{- end }}
+
+{{/* 
+  coder.volumeMounts adds a volume mounts stanza if a cert.secret is provided.
+*/}}
+{{- define "coder.volumeMounts" }}
+{{- if .Values.certs.secret.name }}
+volumeMounts:
+{{- end }}
+{{- if .Values.certs.secret.name }}
+  - name: {{ .Values.certs.secret.name | quote }}
+    mountPath: /etc/ssl/certs/{{ .Values.certs.secret.key }}
+    subPath: {{ .Values.certs.secret.key | quote }}
+{{- end }}
+{{- end }}
+{{/*
+  coder.serviceTolerations adds tolerations if any are specified to 
+  coder-managed services.
+*/}}
+{{- define "coder.serviceTolerations" }}
+{{- if .Values.serviceTolerations }}
+tolerations:
+{{ toYaml .Values.serviceTolerations }}
+{{- end }}
+{{- end }}
+                                                                                                                                                                                                                                                                                                                                                                   coder/templates/_environments.tpl                                                                   0000644 0000000 0000000 00000001754 13721546556 015772  0                                                                                                    ustar 00                                                                0000000 0000000                                                                                                                                                                        {{- define "coder.namespaceWhitelist.envSA" }}
+{{- if .Values.namespaceWhitelist }}
+{{- range .Values.namespaceWhitelist }}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: {{ . | quote }}
+  name: environments
+{{- end }}
+{{- end }}
+{{- end }}
+{{/* 
+  coder.environments.configMap defines configuration that is applied
+  to user environments.
+*/}}
+{{- define "coder.environments.configMap" }}
+{{- if .Values.environments.tolerations }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  namespace: {{ .Release.Namespace | quote }}
+  name: ce-environment-config
+data:
+  tolerations: {{ toJson .Values.environments.tolerations | b64enc | quote }}
+{{- end}}
+{{- end}}
+{{/*
+  coder.environments.configMapEnv adds an environment variable with the name 
+  of the config map holding additional user environment configuration.
+*/}}
+{{- define "coder.environments.configMapEnv" }}
+{{- if .Values.serviceTolerations }}
+- name: ENVIRONMENT_CONFIG_MAP
+  value: "ce-environment-config"
+{{- end }}
+{{- end }}
+                    coder/templates/_envproxy.tpl                                                                       0000644 0000000 0000000 00000003273 13721546556 015133  0                                                                                                    ustar 00                                                                0000000 0000000                                                                                                                                                                        {{/*
+  coder.envproxy.roles creates a role for every valid namespace to provide
+  envproxy permissions to administer environments.
+*/}}
+{{- define "coder.envproxy.roles" }}
+{{ $namespaces := append .Values.namespaceWhitelist .Release.Namespace }}
+{{- range $namespaces }}
+---
+# The envproxy role lists the permissions the envproxy requires.
+# It conditionally sets the pod security policy based on the
+# helm value.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: envproxy
+  namespace: {{ . | quote }}
+rules:
+  - apiGroups:
+      - ""
+      - "apps"
+    resources:
+      - services
+      - pods
+      - pods/exec
+      - secrets
+      - deployments
+      - configmaps
+    verbs:
+      - create
+      - list
+      - get
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - secrets
+    verbs:
+      - create
+  - apiGroups:
+      - ""
+    resources:
+      - pods/exec
+    verbs:
+      - create
+  - apiGroups:
+      - metrics.k8s.io
+    resources:
+      - pods
+    # Necessary for gathering stats about an environment.
+    verbs:
+      - list
+      - get
+{{- end }}
+{{- end }}
+{{/*
+  coder.envproxy.rolebindings creates a role 
+  binding for every valid namespace to provide envproxy
+  permissions to administer environments.
+*/}}
+{{- define "coder.envproxy.rolebindings" }}
+{{ $namespaces := append .Values.namespaceWhitelist .Release.Namespace }}
+{{- range $namespaces }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  namespace: {{ . | quote }}
+  name: envproxy
+subjects:
+  - kind: ServiceAccount
+    name: envproxy
+    namespace: {{ $.Release.Namespace | quote }}
+roleRef:
+  kind: Role
+  name: envproxy
+  apiGroup: rbac.authorization.k8s.io
+{{- end }}
+{{- end }}
+                                                                                                                                                                                                                                                                                                                                     coder/templates/_functions.tpl                                                                      0000644 0000000 0000000 00000001171 13721546556 015244  0                                                                                                    ustar 00                                                                0000000 0000000                                                                                                                                                                        {{/*
+  coder.resources accepts a resource stanza as its scope and returns
+  resource configuration if any of the values are set.
+*/}}
+{{- define "coder.resources" }}
+{{- if . }}
+resources:
+  {{- if .requests }}
+  requests:
+    {{- if .requests.cpu }}
+    cpu: {{ .requests.cpu | quote }}
+    {{- end }} 
+    {{- if .requests.memory }}
+    memory: {{ .requests.memory | quote }}
+    {{- end }}
+  {{- end }}
+  {{- if .limits }}
+  limits:
+    {{- if .limits.cpu }}
+    cpu: {{ .limits.cpu | quote }}
+    {{- end }}
+    {{- if .limits.memory }}
+    memory: {{ .limits.memory | quote }}
+    {{- end }} 
+  {{- end }}
+{{- end }}
+{{- end }}
+                                                                                                                                                                                                                                                                                                                                                                                                       coder/templates/_ingress.tpl                                                                        0000644 0000000 0000000 00000001211 13721546556 014701  0                                                                                                    ustar 00                                                                0000000 0000000                                                                                                                                                                        {{/*
+  coder.ingress.tls configures the tls settings
+  for the default nginx ingress based on the
+  values.yaml settings.
+*/}}
+{{- define "coder.ingress.tls" }}
+{{- if .Values.ingress.tls.enable }}
+  tls:
+    {{- if and .Values.ingress.host .Values.ingress.tls.hostSecretName }}
+    - hosts:
+      - {{ .Values.ingress.host | quote }}
+      secretName: {{ .Values.ingress.tls.hostSecretName }}
+    {{- end }}
+    {{- if and .Values.devurls.host .Values.ingress.tls.devurlsHostSecretName }}
+    - hosts:
+      - {{ .Values.devurls.host | quote }}
+      secretName: {{ .Values.ingress.tls.devurlsHostSecretName }}
+    {{- end }}
+{{- end }}
+{{- end }}
+                                                                                                                                                                                                                                                                                                                                                                                       coder/templates/cemanager.yaml                                                                      0000644 0000000 0000000 00000015113 13721546556 015163  0                                                                                                    ustar 00                                                                0000000 0000000                                                                                                                                                                        # The following describes the Kubernetes deployment of the Coder Enterprise
+# manager. The general setup is as follows:
+#   - A namespace contains all the relevant resources for Coder Enterprise.
+#   - A deployment describes the configuration of the manager container.
+#   - A service is created to route requests to the manager pod.
+#   - A service account (along with a Role and Role binding) is created to grant
+#     the manager the necessary permissions to administer environments.
+#
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    coder.deployment: cemanager
+  name: cemanager
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  replicas: {{ .Values.cemanager.replicas }}
+  strategy:
+    rollingUpdate:
+      maxSurge: "25%"
+      maxUnavailable: "25%"
+  selector:
+    matchLabels:
+      coder.deployment: cemanager
+  template:
+    metadata:
+      labels:
+        coder.deployment: cemanager
+    spec:
+      # coder:coder
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      restartPolicy: Always
+      # terminationGracePeriodSeconds should be set to the upper bound for container rebuilds and creates.
+      # 5 minutes
+      terminationGracePeriodSeconds: 300
+      # Start the manager with a specific service account
+      # that only has permissions to what it needs in order to
+      # administer pods.
+      serviceAccountName: cemanager
+{{- include "coder.serviceTolerations" . | indent 6 }}
+      containers:
+        - name: cemanager
+          image: {{ .Values.cemanager.image | quote }}
+          imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+          ports:
+            - name: tcp-cemanager
+              containerPort: 8080
+          tty: true
+          env:
+            - name: ASSETS_URL
+            - name: HUMAN_LOG
+              value: {{ .Values.logging.human | quote }}
+            - name: JSON_LOG
+              value: {{ .Values.logging.json | quote }}
+            - name: STACKDRIVER_LOG
+              value: {{ .Values.logging.stackdriver | quote }}
+              # ENVBUILDER_IMAGE describes the image used to build
+              # user images and populate them with coder assets
+              # (such as code-server).
+            - name: ENVBUILDER_IMAGE
+              value: {{ .Values.envbuilder.image | quote }}
+            - name: DOCKERD_IMAGE
+              value: {{ .Values.dockerd.image | quote}}
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: VERBOSE
+              value: "true"
+              # ENVIRONMENT_SERVICE_ACCOUNT is the service account to assign
+              # to all user environments. It's primarily used to ensure
+              # environments abide a pod security policy if one is set.
+            - name: ENVIRONMENT_SERVICE_ACCOUNT
+              value: "environments"
+            - name: STORAGE_CLASS
+              value: {{ .Values.storageClassName | quote }}
+            - name: CLUSTER_DOMAIN_SUFFIX
+              value: {{ .Values.clusterDomainSuffix | quote }}
+{{- include "coder.environments.configMapEnv" . | indent 12 }}
+{{- include "coder.namespaceWhitelist.env" . | indent 12 }}
+{{- include "coder.devurls.hostEnv" . | indent 12 }}
+{{- include "coder.postgres.env" . | indent 12 }}
+          command:
+            # Bash is needed to pass signals correctly.
+            - /bin/bash
+            - -c
+            - |
+              echo Waiting on db;
+              /wait_postgres.sh --host="$DB_HOST" --port="$DB_PORT" -U "$DB_USER";
+              echo Starting entrypoint.sh;
+              # Pass signals down to the envmanager.
+              exec /entrypoint.sh cemanager
+          readinessProbe:
+            exec:
+              # The traditional /healthz endpoint is not used since
+              # nginx runs its own health check for the ingress controller
+              # and serving the api from '/' causes the manager's healthcheck
+              # to be masked.
+              command:
+                - curl
+                - -s
+                - localhost:8080/cem-healthz
+            initialDelaySeconds: 30
+            failureThreshold: 4
+            # Poll the manager every 15 seconds. If we fail 4 times the manager
+            # is most likely in a bad spot.
+            periodSeconds: 15
+          livenessProbe:
+            exec:
+              command:
+                - curl
+                - -s
+                - localhost:8080/cem-healthz
+            initialDelaySeconds: 30
+            failureThreshold: 4
+            # Poll the manager every 15 seconds. If we fail 4 times the manager
+            # is most likely in a bad spot.
+            periodSeconds: 15
+{{- include "coder.resources" .Values.cemanager.resources | indent 10 }}
+{{- include "coder.volumeMounts" . | indent 10 }}
+{{- include "coder.volumes" . | indent 6 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cemanager
+  namespace: {{ .Release.Namespace | quote }}
+  annotations:
+    beta.cloud.google.com/backend-config: '{"ports": {"8080":"proxy-config"}}'
+spec:
+  type: {{ .Values.serviceType | quote}}
+  selector:
+    coder.deployment: cemanager
+  ports:
+    - name: tcp-cemanager
+      port: 8080
+      protocol: TCP
+---
+# The service account for the manager.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cemanager
+  namespace: {{ .Release.Namespace | quote }}
+---
+# The roles the manager needs cluster wide for
+# checking available resources.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: cemanager-{{ .Release.Namespace }}-cluster
+rules:
+  - apiGroups:
+      - "" # indicates the core API group
+    resources:
+        # Lets us determine the cores/RAM available on a node
+        # to avoid letting a user select an unschedulable number.
+      - nodes
+      - pods
+        # Lets us determine what namespaces are available for
+        # scheduling. The permissions for a namespace are handled
+        # via regular namespaced Roles.
+      - namespaces
+    # We request read-only permissions at the cluster level to prevent
+    # the product from making any suprising mutations.
+    verbs:
+      - get
+      - list
+---
+# Bind the cluster role to the cemanager.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  namespace: {{ .Release.Namespace | quote }}
+  name: cemanager-{{ .Release.Namespace }}-clusterbinding
+subjects:
+  - kind: ServiceAccount
+    name: cemanager
+    namespace: {{ .Release.Namespace | quote }}
+roleRef:
+  kind: ClusterRole
+  name: cemanager-{{ .Release.Namespace }}-cluster
+  apiGroup: rbac.authorization.k8s.io
+{{- include "coder.cemanager.roles" . }}
+{{- include "coder.cemanager.rolebindings" . }}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                     coder/templates/environments.yaml                                                                   0000644 0000000 0000000 00000000542 13721546556 015770  0                                                                                                    ustar 00                                                                0000000 0000000                                                                                                                                                                        ---
+# The service account used by environments. It has no permissions and is only 
+# used to bind a pod security policy (if one is provided).
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: {{ .Release.Namespace | quote }} 
+  name: environments
+{{- include "coder.namespaceWhitelist.envSA" . }}
+{{- include "coder.environments.configMap" . }}
+                                                                                                                                                              coder/templates/envproxy.yaml                                                                       0000644 0000000 0000000 00000007654 13721546556 015146  0                                                                                                    ustar 00                                                                0000000 0000000                                                                                                                                                                        ---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    coder.deployment: envproxy
+  name: envproxy
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  replicas: {{ .Values.envproxy.replicas }}
+  strategy:
+    rollingUpdate:
+      maxSurge: "25%"
+      maxUnavailable: "25%"
+  selector:
+    matchLabels:
+      coder.deployment: envproxy
+  template:
+    metadata:
+      labels:
+        coder.deployment: envproxy
+    spec:
+      # coder:coder
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      restartPolicy: Always
+      # 4 hours
+      terminationGracePeriodSeconds: 14400
+      serviceAccountName: envproxy
+{{- include "coder.serviceTolerations" . | indent 6 }}
+      containers:
+        - name: envproxy
+          image: {{ .Values.envproxy.image | quote }}
+          imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+          ports:
+            - name: tcp-envproxy
+              containerPort: 8080
+{{- if eq .Values.ssh.enable true }}
+            - name: ssh-envproxy
+              containerPort: 2222
+{{- end}}          
+          tty: true
+          env:
+            - name: HUMAN_LOG
+              value: {{ .Values.logging.human | quote }}
+            - name: JSON_LOG
+              value: {{ .Values.logging.json | quote }}
+            - name: STACKDRIVER_LOG
+              value: {{ .Values.logging.stackdriver | quote }}
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: VERBOSE
+              value: "true"
+            - name: CLUSTER_DOMAIN_SUFFIX
+              value: {{ .Values.clusterDomainSuffix | quote }}
+            - name: ENVBUILDER_IMAGE
+              value: {{ .Values.envbuilder.image | quote }}
+            - name: DOCKERD_IMAGE
+              value: {{ .Values.dockerd.image | quote}}
+            - name: ENVIRONMENT_SERVICE_ACCOUNT
+              value: "environments"
+{{- include "coder.environments.configMapEnv" . | indent 12 }}
+{{- include "coder.devurls.hostEnv" . | indent 12 }}
+{{- include "coder.postgres.env" . | indent 12 }}
+          command:
+            # Bash needs to be used for signals to be passed down correctly.
+            - /bin/bash
+            - -c
+            - |
+              echo Waiting on db;
+              /wait_postgres.sh --host="$DB_HOST" -U "$DB_USER" --port="$DB_PORT";
+              echo Starting envproxy;
+              # Pass signals down to the envproxy.
+              exec /entrypoint.sh envproxy
+          readinessProbe:
+            exec:
+              command:
+                - curl
+                - -s
+                - localhost:8080/healthz
+            initialDelaySeconds: 30
+            failureThreshold: 4
+            # Poll the envproxy every 15 seconds. If we fail 4 times the proxy
+            # is most likely in a bad spot.
+            periodSeconds: 15
+          livenessProbe:
+            exec:
+              command:
+                - curl
+                - -s
+                - localhost:8080/healthz
+            initialDelaySeconds: 30
+            failureThreshold: 4
+            # Poll the envproxy every 15 seconds. If we fail 4 times the proxy
+            # is most likely in a bad spot.
+            periodSeconds: 15
+{{- include "coder.resources" .Values.envproxy.resources | indent 10 }}
+{{- include "coder.volumeMounts" . | indent 10 }}
+{{- include "coder.volumes" . | indent 6 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: envproxy
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  type: {{ .Values.serviceType | quote }}
+  selector:
+    coder.deployment: envproxy
+  ports:
+    - name: tcp-envproxy
+      port: 8080
+      protocol: TCP
+{{- if eq .Values.ssh.enable true}}
+    - name: tcp-ssh
+      port: 2222
+      protocol: TCP
+{{- end }}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: {{ .Release.Namespace | quote }}
+  name: envproxy
+{{- include "coder.envproxy.roles" . }}
+{{- include "coder.envproxy.rolebindings" . }}
+                                                                                    coder/templates/envwatcher.yaml                                                                     0000644 0000000 0000000 00000005113 13721546556 015406  0                                                                                                    ustar 00                                                                0000000 0000000                                                                                                                                                                        ---
+# envwatcher was originally designed to be a cron job,
+# unfortunately istio v1.2 and earlier does not play well
+# with jobs since the side car will never exit, causing a
+# gradual leak of zombie jobs. Since we cannot assume 1.3
+# or later is running in a customer's environment we are
+# forced to run this as a deployment that loops internally.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    coder.deployment: envwatcher
+  name: envwatcher
+  namespace: {{ .Release.Namespace | quote }}
+spec:
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      coder.deployment: envwatcher
+  template:
+    metadata:
+      labels:
+        coder.deployment: envwatcher
+    spec:
+      # coder:coder
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 60
+      serviceAccountName: cemanager
+{{- include "coder.serviceTolerations" . | indent 6 }}
+      containers:
+        - name: envwatcher
+          image: {{ .Values.envwatcher.image | quote }}
+          imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+          command:
+            - /bin/bash
+            - -c
+            - |
+              echo Waiting on db;
+              /wait_postgres.sh --host="$DB_HOST" -U "$DB_USER" --port="$DB_PORT";
+              echo Starting entrypoint.sh;
+              exec /entrypoint.sh envwatcher
+          env:
+            - name: AUTOOFF_ENABLED
+              value: {{ .Values.autooff.enable | quote }}
+            - name: HUMAN_LOG
+              value: {{ .Values.logging.human | quote }}
+            - name: JSON_LOG
+              value: {{ .Values.logging.json | quote }}
+            - name: STACKDRIVER_LOG
+              value: {{ .Values.logging.stackdriver | quote }}
+            - name: ENVBUILDER_IMAGE
+              value: {{ .Values.envbuilder.image | quote }}
+            - name: DOCKERD_IMAGE
+              value: {{ .Values.dockerd.image | quote}}
+            - name: ENVIRONMENT_SERVICE_ACCOUNT
+              value: "environments"
+            - name: CLUSTER_DOMAIN_SUFFIX
+              value: {{ .Values.clusterDomainSuffix | quote }}
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+{{- include "coder.environments.configMapEnv" . | indent 12 }}
+{{- include "coder.postgres.env" . | indent 12 }}
+{{- include "coder.resources" .Values.envwatcher.resources | indent 10 }}
+{{- include "coder.volumeMounts" . | indent 10 }}
+{{- include "coder.volumes" . | indent 6 }}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                     coder/templates/ingress.yaml                                                                        0000644 0000000 0000000 00000022220 13721546556 014710  0                                                                                                    ustar 00                                                                0000000 0000000                                                                                                                                                                        # This configuration file is ported from the nginx repo:
+# See https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/static/mandatory.yaml
+{{- if eq .Values.ingress.useDefault  true}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: custom-headers
+  namespace: {{ .Release.Namespace | quote }}
+data:
+  # The default timeout to receive a response from the backend is
+  # 15 seconds. This is a little low for applications like webpack
+  # which may need extra time to compile resources upon receiving
+  # a request.
+  # See https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_filters/router_filter#x-envoy-upstream-rq-timeout-ms
+  X-Envoy-Upstream-Rq-Timeout-Ms: "60000"
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: nginx-configuration
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/part-of: ingress-nginx
+data:
+  proxy-set-headers: "{{ .Release.Namespace }}/custom-headers"
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: tcp-services
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/part-of: ingress-nginx
+data:
+  22: "{{ .Release.Namespace }}/envproxy:2222"
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: udp-services
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/part-of: ingress-nginx
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: nginx-ingress-serviceaccount
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/part-of: ingress-nginx
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: nginx-ingress-clusterrole-{{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/part-of: ingress-nginx
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+      - endpoints
+      - nodes
+      - pods
+      - secrets
+    verbs:
+      - list
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - nodes
+    verbs:
+      - get
+  - apiGroups:
+      - ""
+    resources:
+      - services
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - events
+    verbs:
+      - create
+      - patch
+  - apiGroups:
+      - "extensions"
+      - "networking.k8s.io"
+    resources:
+      - ingresses
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - "extensions"
+      - "networking.k8s.io"
+    resources:
+      - ingresses/status
+    verbs:
+      - update
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: Role
+metadata:
+  name: nginx-ingress-role
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/part-of: ingress-nginx
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+      - pods
+      - secrets
+      - namespaces
+    verbs:
+      - get
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+    resourceNames:
+      # Defaults to "<election-id>-<ingress-class>"
+      # Here: "<ingress-controller-leader>-<nginx>"
+      # This has to be adapted if you change either parameter
+      # when launching the nginx-ingress-controller.
+      - ingress-controller-leader-{{ .Release.Namespace }}
+    verbs:
+      - get
+      - update
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+    verbs:
+      - create
+  - apiGroups:
+      - ""
+    resources:
+      - endpoints
+    verbs:
+      - get
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: RoleBinding
+metadata:
+  name: nginx-ingress-role-nisa-binding
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/part-of: ingress-nginx
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: nginx-ingress-role
+subjects:
+  - kind: ServiceAccount
+    name: nginx-ingress-serviceaccount
+    namespace: {{ .Release.Namespace | quote }}
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  # The cluster role binding needs to be namespaced to avoid
+  # reassigning the subject each time someone makes a push.
+  name: nginx-ingress-clusterrole-nisa-binding-{{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/part-of: ingress-nginx
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: nginx-ingress-clusterrole-{{ .Release.Namespace }}
+subjects:
+  - kind: ServiceAccount
+    name: nginx-ingress-serviceaccount
+    namespace: {{ .Release.Namespace | quote }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-ingress-controller
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/part-of: ingress-nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: ingress-nginx
+      app.kubernetes.io/part-of: ingress-nginx
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: ingress-nginx
+        app.kubernetes.io/part-of: ingress-nginx
+      annotations:
+        prometheus.io/port: "10254"
+        prometheus.io/scrape: "true"
+    spec:
+      # wait up to five minutes for the drain of connections
+      terminationGracePeriodSeconds: 300
+      serviceAccountName: nginx-ingress-serviceaccount
+      nodeSelector:
+        beta.kubernetes.io/os: linux
+{{- include "coder.serviceTolerations" . | indent 6 }}
+      containers:
+        - name: nginx-ingress-controller
+          image: quay.io/kubernetes-ingress-controller/nginx-ingress-controller:0.26.1
+          args:
+            - /nginx-ingress-controller
+              # The ingress-class points the nginx controller to our
+              # "web-ingress" ingress resource.
+            - --ingress-class={{ .Release.Namespace }}
+            - --configmap=$(POD_NAMESPACE)/nginx-configuration
+            - --tcp-services-configmap=$(POD_NAMESPACE)/tcp-services
+            - --udp-services-configmap=$(POD_NAMESPACE)/udp-services
+            - --publish-service=$(POD_NAMESPACE)/ingress-nginx
+            - --annotations-prefix=nginx.ingress.kubernetes.io
+          securityContext:
+            allowPrivilegeEscalation: true
+            capabilities:
+              drop:
+                - ALL
+              add:
+                - NET_BIND_SERVICE
+            # www-data -> 33
+            runAsUser: 33
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          ports:
+            - name: http
+              containerPort: 80
+            - name: https
+              containerPort: 443
+          livenessProbe:
+            failureThreshold: 3
+            exec:
+              command:
+                - curl
+                - s
+                - http://localhost:10254/healthz
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 10
+          readinessProbe:
+            failureThreshold: 3
+            exec:
+              command:
+                - curl
+                - s
+                - http://localhost:10254/healthz
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 10
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                  - /wait-shutdown
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: ingress-nginx
+  namespace: {{ .Release.Namespace | quote }}
+  labels:
+    app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/part-of: ingress-nginx
+spec:
+  externalTrafficPolicy: Local
+  type: LoadBalancer
+  selector:
+    app.kubernetes.io/name: ingress-nginx
+    app.kubernetes.io/part-of: ingress-nginx
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+    - name: https
+      port: 443
+      targetPort: https
+{{- if eq .Values.ssh.enable true }}
+    - name: ssh
+      port: 22
+      targetPort: 22
+      protocol: TCP
+{{- end }}
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: web-ingress
+  namespace: {{ .Release.Namespace | quote }}
+  annotations:
+    # This class definition connects the nginx ingress controller
+    # to the web-ingress.
+    kubernetes.io/ingress.class: {{ .Release.Namespace }}
+    # A body size of 0 prevents 413 status codes when trying to
+    # push an image.
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    {{- if .Values.ingress.additionalAnnotations }}
+    {{- range .Values.ingress.additionalAnnotations }}
+    {{ . }}
+    {{- end }}
+    {{- end }}
+spec:
+{{- include "coder.ingress.tls" . }}
+  rules:
+  - host: {{ .Values.ingress.host | quote }}
+    http:
+      paths:
+      - path: /proxy/
+        backend:
+          serviceName: envproxy
+          servicePort: 8080
+      - path: /
+        backend:
+          serviceName: cemanager
+          servicePort: 8080
+{{- if ne .Values.devurls.host "" }}
+  - host: {{ .Values.devurls.host | quote }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: envproxy
+          servicePort: 8080
+{{- end }}
+---
+{{- end }}
+                                                                                                                                                                                                                                                                                                                                                                                coder/templates/psp.yaml                                                                            0000644 0000000 0000000 00000004054 13721546556 014045  0                                                                                                    ustar 00                                                                0000000 0000000                                                                                                                                                                        {{- if ne .Values.podSecurityPolicyName "" }}
+---
+# The coder-restricted role adds the pod security policy if one is specified.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: {{ .Release.Namespace | quote }}
+  name: coder-restricted
+rules:
+  - apiGroups:
+    - extensions
+    resources:
+    - podsecuritypolicies
+    resourceNames:
+    - {{ .Values.podSecurityPolicyName | quote }}
+    verbs:
+    - use
+---
+# Bind the coder-restricted role to the various Coder service accounts.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  namespace: {{ .Release.Namespace | quote }}
+  name: coder-restricted
+subjects:
+  - kind: ServiceAccount
+    name: timescale
+    namespace: {{ .Release.Namespace | quote }}
+  - kind: ServiceAccount
+    name: cemanager
+    namespace: {{ .Release.Namespace | quote }}
+  - kind: ServiceAccount
+    name: envproxy
+    namespace: {{ .Release.Namespace | quote }}
+  - kind: ServiceAccount
+    name: environments
+    namespace: {{ .Release.Namespace | quote }}
+roleRef:
+  kind: Role
+  name: coder-restricted
+  apiGroup: rbac.authorization.k8s.io
+{{- end }}
+{{- if and (ne .Values.ingress.podSecurityPolicyName "") (eq .Values.ingress.useDefault true) }}
+---
+# The ingress-restricted role adds the pod security policy if one is specified
+# to the ingress service account.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: {{ .Release.Namespace | quote }}
+  name: ingress-restricted
+rules:
+  - apiGroups:
+    - extensions
+    resources:
+    - podsecuritypolicies
+    resourceNames:
+    - {{ .Values.ingress.podSecurityPolicyName | quote }}
+    verbs:
+    - use
+---
+# Bind the ingress-restricted role to the environments service account.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  namespace: {{ .Release.Namespace | quote }}
+  name: ingress-restricted
+subjects:
+  - kind: ServiceAccount
+    name: nginx-ingress-serviceaccount
+    namespace: {{ .Release.Namespace | quote }}
+roleRef:
+  kind: Role
+  name: ingress-restricted
+  apiGroup: rbac.authorization.k8s.io
+{{- end }}
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    coder/templates/timescale.yaml                                                                      0000644 0000000 0000000 00000003636 13721546556 015216  0                                                                                                    ustar 00                                                                0000000 0000000                                                                                                                                                                        {{- if eq .Values.postgres.useDefault  true}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: timescale
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: timescale
+spec:
+  ports:
+    - port: 5432
+      name: tcp-timescale
+  selector:
+    app: timescale
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: timescale
+  namespace: {{ .Release.Namespace }}
+spec:
+  serviceName: timescale
+  replicas: 1
+  selector:
+    matchLabels:
+      app: timescale
+  template:
+    metadata:
+      labels:
+        app: timescale
+    spec:
+      serviceAccountName: timescale
+      securityContext:
+        # User 70 is postgres.
+        runAsUser: 70
+        runAsGroup: 70
+        fsGroup: 70
+{{- include "coder.serviceTolerations" . | indent 6 }}
+      containers:
+        - name: timescale
+          image: {{ .Values.timescale.image }}
+          imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+          livenessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - coder
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: timescale-data
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                  - /bin/sh
+                  - -c
+                  - su
+                  - postgres
+                  - -c
+                  - "pg_ctl stop"
+{{- include "coder.resources" .Values.timescale.resources | indent 10 }}
+  volumeClaimTemplates:
+    - metadata:
+        name: timescale-data
+      spec:
+        {{- include "coder.storageClassName" . | indent 8 }}
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: {{ .Values.timescale.resources.requests.storage | quote }}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  namespace: {{ .Release.Namespace | quote }}
+  name: timescale
+{{- end }}
+                                                                                                  coder/NOTES.txt                                                                                     0000644 0000000 0000000 00000000254 13721546556 012010  0                                                                                                    ustar 00                                                                0000000 0000000                                                                                                                                                                        Thank you for installing {{ .Chart.Name }}.
+
+For more information on configuration see values.yaml in the package
+`helm pull <repo>/{{ .Chart.Name}} {{ .Chart.Version }}`.
+                                                                                                                                                                                                                                                                                                                                                    coder/certs/.gitkeep                                                                                0000644 0000000 0000000 00000000000 13721546556 013115  0                                                                                                    ustar 00                                                                0000000 0000000                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
