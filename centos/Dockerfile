@@ -36,7 +36,7 @@ RUN dnf update -y && \
     bind-utils traceroute \
     git gcc gcc-c++ cmake make \
     python3 python3-pip \
-    libcurl4-openssl-dev libssl-dev pkg-config \
+    pkg-config \
     bash-completion rsync tree zsh zip unzip \
     krb5-workstation \
     tmux \
