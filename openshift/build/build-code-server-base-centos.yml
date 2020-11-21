@@ -102,7 +102,7 @@ objects:
     output:
       to:
         kind: ImageStreamTag
-        name: ${APPLICATION_NAME}:${CONTEXT_DIR}
+        name: ${APPLICATION_NAME}:${CONTEXT_DIR}-base
     source:
       contextDir: ${CONTEXT_DIR}
       git:
