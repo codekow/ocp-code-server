@@ -10,7 +10,9 @@ Deploy a Custom Code Server (w/ custom build)
 
 `Add to Project` => `Import YAML / JSON`
 
-Use [deploy-code-server-no-webdav-template.yml](openshift/templates/deploy-code-server-no-webdav-template.yml).
+[deploy-code-server-no-webdav-template.yml](openshift/deploy-code-server-no-webdav-template.yml).
+[deploy-code-server-template.yml](openshift/deploy-code-server-template.yml).
+
 
 ### Demo Route
 
