@@ -31,7 +31,7 @@ export NSS_WRAPPER_GROUP=/etc/group
 
 
 # Initalize /home/coder (quickfix)
-# cp -an /etc/skel/.{bash,profile,screenrc}* /home/coder
+cp -an /etc/skel/.{bash,zsh}* /home/coder
 
 # setup the npm defaults if the script exists
 if [ -f /usr/local/bin/npm-setup.sh ]; then
