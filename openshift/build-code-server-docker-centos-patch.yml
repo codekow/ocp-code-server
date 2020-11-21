@@ -3,7 +3,7 @@ kind: BuildConfig
 metadata:
   labels:
     build: custom-code-server
-  name: custom-code-server-docker-debian-patch
+  name: custom-code-server-docker-centos-patch
 spec:
   output:
     to:
@@ -24,8 +24,8 @@ spec:
           dnf clean all
 
       # install azure cli tools
-      RUN curl -sL https://packages.microsoft.com/keys/microsoft.asc | \
-          gpg --dearmor | tee /etc/apt/trusted.gpg.d/microsoft.asc.gpg > /dev/null
+      # RUN curl -sL https://packages.microsoft.com/keys/microsoft.asc | \
+      #    gpg --dearmor | tee /etc/apt/trusted.gpg.d/microsoft.asc.gpg > /dev/null
       #    echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/azure-cli.list && \
       #    apt-get update && \
       #    apt-get -y install azure-cli && \
@@ -34,16 +34,17 @@ spec:
       # see https://docs.microsoft.com/en-us/sql/connect/odbc/linux-mac/installing-the-microsoft-odbc-driver-for-sql-server
       ENV DOTNET_CLI_TELEMETRY_OPTOUT=true
       # hadolint ignore=DL3008
-      RUN curl -sL https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/microsoft-prod.list && \
-          apt-get update && \
-          ACCEPT_EULA=Y apt-get -y install --no-install-recommends dotnet-sdk-3.1 msodbcsql17 mssql-tools unixodbc-dev && \
-          rm -rf /var/lib/apt/lists/*
+      RUN curl -sL curl https://packages.microsoft.com/config/rhel/8/prod.repo > /etc/yum.repos.d/mssql-release.repo && \
+          yum remove unixODBC-utf16 unixODBC-utf16-devel && \
+          echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> /etc/profile.d/mssql.sh && \
+          ACCEPT_EULA=Y yum -y install dotnet-sdk-3.1 msodbcsql17 mssql-tools unixODBC-devel && \
+          yum clean all
 
       # install: powershell
       # hadolint ignore=DL3008 
       RUN apt-get update && \
-          apt-get -y install --no-install-recommends powershell && \
-          rm -rf /var/lib/apt/lists/*
+          yum -y install powershell && \
+          yum clean all
 
       # TODO: patch code-server with webdav support / work upstream
       # /usr/local/lib/code-server/
@@ -103,7 +104,7 @@ spec:
     dockerStrategy:
       from:
         kind: ImageStreamTag
-        name: custom-code-server:debian
+        name: custom-code-server:centos
     type: Docker
   successfulBuildsHistoryLimit: 5
   triggers:
