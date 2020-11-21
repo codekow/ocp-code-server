@@ -46,7 +46,8 @@ RUN apt-get update && \
     krb5-user libkrb5-dev \
     tmux screen \
     nano vim jq && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* && \
+    chmod g+w /etc/passwd
 
 # fix: alias python / pip 
 RUN ln -s /usr/bin/python3 /usr/local/bin/python && \

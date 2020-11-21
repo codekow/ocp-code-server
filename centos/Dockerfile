@@ -45,7 +45,8 @@ RUN rpm -ivh https://github.com/cdr/code-server/releases/download/v${CODE_SERVER
     krb5-workstation \
     tmux \
     nano vim jq && \
-    dnf clean all 
+    dnf clean all && \
+    chmod g+w /etc/passwd
 
 # fix: alias python / pip 
 RUN ln -s /usr/bin/python3 /usr/local/bin/python && \

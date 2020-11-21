@@ -21,14 +21,25 @@ if [ -f ${HOME}/.ssh/id_rsa ]; then
     fi
 fi
 
-grep -v -e ^coder -e ^"$USER_ID" /etc/passwd > "/tmp/.uid-kludge"
+NSS_WRAPPER_PASSWD=/tmp/passwd.nss_wrapper
 
-echo "coder:x:${USER_ID}:${GROUP_ID}:Coder User:${HOME}:/sbin/nologin" >> "/tmp/.uid-kludge"
+if ! whoami &> /dev/null; then
+    if [ -w /etc/passwd ]; then
+        grep -v -e ^${USER_NAME:-coder} -e ^"${USER_ID}" /etc/passwd > $NSS_WRAPPER_PASSWD
+        echo "${USER_NAME:-coder}:x:${USER_ID}:0:${USER_NAME:-coder} user:${HOME}:/sbin/nologin" >> $NSS_WRAPPER_PASSWD
+        cat $NSS_WRAPPER_PASSWD > /etc/passwd
+    fi
+fi
 
-export LD_PRELOAD=libnss_wrapper.so
-export NSS_WRAPPER_PASSWD=/tmp/.uid-kludge
-export NSS_WRAPPER_GROUP=/etc/group
+if [ x"${USER_ID}" != x"0" -a x"${USER_ID}" != x"1001" ]; then
+    cp /etc/passwd $NSS_WRAPPER_PASSWD
 
+    echo "${USER_NAME:-coder}:x:$(id -u):0:${USER_NAME:-coder} user:${HOME}:/sbin/nologin" >> $NSS_WRAPPER_PASSWD
+
+    export NSS_WRAPPER_PASSWD
+    export LD_PRELOAD=/usr/lib64/libnss_wrapper.so
+
+fi
 
 # Initalize /home/coder (quickfix)
 cp -an /etc/skel/.{bash,zsh}* /home/coder
