@@ -5,14 +5,24 @@ metadata:
     build: custom-code-server
   name: custom-code-server-docker-centos-patch
 spec:
+  runPolicy: SerialLatestOnly
   resources:
     limits:
       memory: 1Gi
+  strategy:
+    dockerStrategy:
+      from:
+        kind: ImageStreamTag
+        name: custom-code-server:centos-base
+    type: Docker
   output:
     to:
       kind: ImageStreamTag
-      name: 'custom-code-server:base'
-  runPolicy: SerialLatestOnly
+      name: 'custom-code-server:centos'
+  triggers:
+    - imageChange:
+      type: ImageChange
+    - type: ConfigChange
   source:
     dockerfile: |
       FROM custom-code-server:centos
@@ -85,16 +95,5 @@ spec:
       USER 1001
 
     type: Dockerfile
-  strategy:
-    dockerStrategy:
-      from:
-        kind: ImageStreamTag
-        name: custom-code-server:centos
-    type: Docker
-  successfulBuildsHistoryLimit: 5
-  triggers:
-    - imageChange:
-      type: ImageChange
-    - type: ConfigChange
 status:
   lastVersion: 1336

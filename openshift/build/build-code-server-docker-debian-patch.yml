@@ -5,11 +5,21 @@ metadata:
     build: custom-code-server
   name: custom-code-server-docker-debian-patch
 spec:
+  runPolicy: SerialLatestOnly
+  strategy:
+    dockerStrategy:
+      from:
+        kind: ImageStreamTag
+        name: custom-code-server:debian-base
+    type: Docker
   output:
     to:
       kind: ImageStreamTag
-      name: 'custom-code-server:base'
-  runPolicy: SerialLatestOnly
+      name: custom-code-server:debian
+  triggers:
+    - imageChange:
+      type: ImageChange
+    - type: ConfigChange
   source:
     dockerfile: |
       FROM custom-code-server:debian
@@ -98,16 +108,5 @@ spec:
       USER 1001
 
     type: Dockerfile
-  strategy:
-    dockerStrategy:
-      from:
-        kind: ImageStreamTag
-        name: custom-code-server:debian
-    type: Docker
-  successfulBuildsHistoryLimit: 5
-  triggers:
-    - imageChange:
-      type: ImageChange
-    - type: ConfigChange
 status:
   lastVersion: 1336

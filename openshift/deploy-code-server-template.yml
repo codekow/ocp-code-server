@@ -128,7 +128,7 @@ objects:
       dockerStrategy:
         from:
           kind: ImageStreamTag
-          name: '${APPLICATION_NAME}:base'
+          name: '${APPLICATION_NAME}:debian'
       type: Docker
     successfulBuildsHistoryLimit: 5
     triggers:
