@@ -33,13 +33,13 @@ WORKDIR /home/coder
 RUN dnf update -y && \
     dnf install -y \
     curl gnupg wget \
-    dnsutils traceroute \
-    git gcc g++ cmake make \
-    python3 python3-pip python3-venv python3-dev \
+    bind-utils traceroute \
+    git gcc gcc-c++ cmake make \
+    python3 python3-pip \
     libcurl4-openssl-dev libssl-dev pkg-config \
-    bash-completion pass rsync tree zsh zip unzip \
-    krb5-user libkrb5-dev \
-    tmux screen \
+    bash-completion rsync tree zsh zip unzip \
+    krb5-workstation \
+    tmux \
     nano vim jq && \
     dnf clean all 
 

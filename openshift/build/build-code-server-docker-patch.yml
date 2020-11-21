@@ -16,6 +16,12 @@ spec:
 
       USER root
 
+      # install more tools
+      RUN apt-get update && \
+          apt-get -y install \
+          pass screen && \
+          rm -rf /var/lib/apt/lists/*
+
       # install azure cli tools
       RUN curl -sL https://packages.microsoft.com/keys/microsoft.asc | \
           gpg --dearmor | tee /etc/apt/trusted.gpg.d/microsoft.asc.gpg > /dev/null
