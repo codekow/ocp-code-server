@@ -1,5 +1,13 @@
 FROM centos:8
 
+### Atomic/OpenShift Labels - https://github.com/projectatomic/ContainerApplicationGenericLabels
+LABEL name="custom-code-server" \
+      maintainer="cory@happykow.com" \
+      vendor="Coder" \
+      version="0.9.1" \
+      summary="Custom Code Server" \
+      description="Custom Code Server base image with a basic collection of tools"
+
 # bug: hadolint doesn't see user below
 # hadolint ignore=DL3002
 USER root
