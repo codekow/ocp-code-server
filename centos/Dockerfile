@@ -30,7 +30,7 @@ WORKDIR /home/coder
 # setup: entrypoint and other scripts over 
 COPY bin /usr/local/bin
 
-ENV CODE_SERVER_VERSION=3.6.0
+ENV CODE_SERVER_VERSION=3.7.2
 
 RUN rpm -ivh https://github.com/cdr/code-server/releases/download/v${CODE_SERVER_VERSION}/code-server-${CODE_SERVER_VERSION}-amd64.rpm && \
     dnf update -y && \
