@@ -8,7 +8,7 @@ spec:
   output:
     to:
       kind: ImageStreamTag
-      name: 'custom-code-server:latest'
+      name: 'custom-code-server:base'
   runPolicy: SerialLatestOnly
   source:
     dockerfile: |
