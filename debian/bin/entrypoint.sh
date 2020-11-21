@@ -31,7 +31,7 @@ if ! whoami &> /dev/null; then
     fi
 fi
 
-if [ x"${USER_ID}" != x"0" -a x"${USER_ID}" != x"1001" ]; then
+if [ ! -w /etc/passwd -a x"${USER_ID}" != x"0" -a x"${USER_ID}" != x"1001" ]; then
     cp /etc/passwd $NSS_WRAPPER_PASSWD
 
     echo "${USER_NAME:-coder}:x:$(id -u):0:${USER_NAME:-coder} user:${HOME}:/sbin/nologin" >> $NSS_WRAPPER_PASSWD
