@@ -16,8 +16,8 @@ USER root
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # fix: node CA trust defaults for requests / node
-ENV REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
-ENV NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt
+ENV REQUESTS_CA_BUNDLE=/etc/pki/tls/certs/ca-bundle.crt
+ENV NODE_EXTRA_CA_CERTS=/etc/pki/tls/certs/ca-bundle.crt
 
 # fix: path for local bin
 ENV PATH=$PATH:/home/coder/.local/bin
