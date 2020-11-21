@@ -32,7 +32,7 @@ COPY bin /usr/local/bin
 
 ENV CODE_SERVER_VERSION=3.6.0
 
-RUN rpm -ivh https://github.com/cdr/code-server/releases/download/v${CODE_SERVER_VERSION}/code-server-${CODE_SERVER_VERSION}-amd64.rpm 
+RUN rpm -ivh https://github.com/cdr/code-server/releases/download/v${CODE_SERVER_VERSION}/code-server-${CODE_SERVER_VERSION}-amd64.rpm && \
     dnf update -y && \
     dnf install -y \
     curl gnupg wget \
