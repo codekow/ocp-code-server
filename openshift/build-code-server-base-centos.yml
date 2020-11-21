@@ -27,7 +27,7 @@ parameters:
   description: Consider the pod quota limits
 - name: BUILD_CPU_LIMIT
   displayName: Build CPU Limit
-  value: 600m
+  value: 400m
   required: true
   description: Consider the pod quota limits
 - name: CUSTOM_PROXY
@@ -41,17 +41,21 @@ parameters:
 - name: BUILD_DEPLOY_TOKEN_PASSWORD
   description: "Username to allow cloning of private repos"
   displayName: "GIT Password"
-- name: BUILD_REF
+  - name: CONTEXT_DIR
+  description: "Build Source Files Directory"
+  displayName: "Context Directory"
+  value: /centos
+  - name: BUILD_REF
   description: "Branch Name to build from (default: master)"
 - name: BUILD_URL
   description: "URL to git repo"
   value: "https://github.com/happykow/ocp-code-server.git"
 - name: DOCKER_IMAGE_BASE
   description: "Base docker URI for building"
-  value: "docker.io/codercom/code-server"
+  value: "docker.io/centos"
 - name: DOCKER_IMAGE_TAG
   description: "Base docker URI for building"
-  value: "3.7.2"
+  value: "8"
 objects:
 - kind: ImageStream
   apiVersion: image.openshift.io/v1
@@ -65,11 +69,9 @@ objects:
 - kind: ImageStream
   apiVersion: image.openshift.io/v1
   metadata:
-    annotations:
-      docker.io/source: 'docker.io/codercom/code-server:3.6.0'
     labels:
       build: ${APPLICATION_NAME}
-    name: code-server
+    name: centos
   spec:
     lookupPolicy:
       local: false
@@ -100,9 +102,9 @@ objects:
     output:
       to:
         kind: ImageStreamTag
-        name: ${APPLICATION_NAME}:ocp-base
+        name: ${APPLICATION_NAME}:ocp-centos
     source:
-      contextDir: /debian
+      contextDir: ${CONTEXT_DIR}
       git:
         uri: ${BUILD_URL}
         ref: ${BUILD_REF}
@@ -111,7 +113,7 @@ objects:
       dockerStrategy:
         from:
           kind: ImageStreamTag
-          name: "code-server:latest"
+          name: "centos:latest"
       type: Docker
     triggers:
     - type: ConfigChange
