@@ -55,7 +55,7 @@ parameters:
   value: "docker.io/centos"
 - name: DOCKER_IMAGE_TAG
   description: "Base docker URI for building"
-  value: "8"
+  value: "3.7.2"
 objects:
 - kind: ImageStream
   apiVersion: image.openshift.io/v1
@@ -78,11 +78,11 @@ objects:
     tags:
       - from:
           kind: DockerImage
-          name: ${DOCKER_IMAGE_BASE}:${DOCKER_IMAGE_TAG}
-        name: ${DOCKER_IMAGE_TAG}
+          name: docker.io/centos:8
+        name: '8'
       - from:
           kind: ImageStreamTag
-          name: ${DOCKER_IMAGE_TAG}
+          name: '8'
         name: "latest"
 - kind: BuildConfig
   apiVersion: build.openshift.io/v1
@@ -108,6 +108,8 @@ objects:
       git:
         uri: ${BUILD_URL}
         ref: ${BUILD_REF}
+      args:
+        - CODE_SERVER_VERSION: ${DOCKER_IMAGE_TAG}
       type: Git
     strategy:
       dockerStrategy:

@@ -4,7 +4,7 @@ FROM centos:8
 LABEL name="custom-code-server" \
       maintainer="cory@happykow.com" \
       vendor="Coder" \
-      version="0.9.1" \
+      version="3.7.2" \
       summary="Custom Code Server" \
       description="Custom Code Server base image with a basic collection of tools"
 
@@ -30,9 +30,9 @@ WORKDIR /home/coder
 # setup: entrypoint and other scripts over 
 COPY bin /usr/local/bin
 
-ENV CODE_SERVER_VERSION=3.7.2
+ARG CODE_SERVER_VERSION
 
-RUN rpm -ivh https://github.com/cdr/code-server/releases/download/v${CODE_SERVER_VERSION}/code-server-${CODE_SERVER_VERSION}-amd64.rpm && \
+RUN rpm -ivh https://github.com/cdr/code-server/releases/download/v${CODE_SERVER_VERSION:-3.7.2}/code-server-${CODE_SERVER_VERSION:-3.7.2}-amd64.rpm && \
     dnf update -y && \
     dnf install -y \
     nss_wrapper \
