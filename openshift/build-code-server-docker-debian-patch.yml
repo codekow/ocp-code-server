@@ -3,7 +3,7 @@ kind: BuildConfig
 metadata:
   labels:
     build: custom-code-server
-  name: custom-code-server-docker-patch
+  name: custom-code-server-docker-debian-patch
 spec:
   output:
     to:
@@ -12,7 +12,7 @@ spec:
   runPolicy: SerialLatestOnly
   source:
     dockerfile: |
-      FROM custom-code-server:base
+      FROM custom-code-server:debian
 
       USER root
 
@@ -102,7 +102,7 @@ spec:
     dockerStrategy:
       from:
         kind: ImageStreamTag
-        name: 'custom-code-server:ocp-base'
+        name: custom-code-server:debian
     type: Docker
   successfulBuildsHistoryLimit: 5
   triggers:

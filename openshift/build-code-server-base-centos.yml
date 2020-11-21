@@ -6,7 +6,7 @@ labels:
   app.kubernetes.io/part-of: code-server
   app.kubernetes.io/component: ide
 metadata:
-  name: code-server
+  name: custom-code-server
   annotations:
     openshift.io/display-name: VS Code Server
     description: Deploy VS Code Server with persistent volume
@@ -41,11 +41,11 @@ parameters:
 - name: BUILD_DEPLOY_TOKEN_PASSWORD
   description: "Username to allow cloning of private repos"
   displayName: "GIT Password"
-  - name: CONTEXT_DIR
+- name: CONTEXT_DIR
   description: "Build Source Files Directory"
   displayName: "Context Directory"
-  value: /centos
-  - name: BUILD_REF
+  value: centos
+- name: BUILD_REF
   description: "Branch Name to build from (default: master)"
 - name: BUILD_URL
   description: "URL to git repo"
@@ -90,7 +90,7 @@ objects:
     labels:
       build: ${APPLICATION_NAME}
       app.kubernetes.io/instance: code-server
-    name: ${APPLICATION_NAME}-base
+    name: ${APPLICATION_NAME}-${CONTEXT_DIR}-base
     annotations:
       app.openshift.io/vcs-ref: ${BUILD_REF}
       app.openshift.io/vcs-uri: ${BUILD_URL}
@@ -102,7 +102,7 @@ objects:
     output:
       to:
         kind: ImageStreamTag
-        name: ${APPLICATION_NAME}:ocp-centos
+        name: ${APPLICATION_NAME}:ocp-${CONTEXT_DIR}
     source:
       contextDir: ${CONTEXT_DIR}
       git:
