@@ -8,13 +8,13 @@ cd "$(dirname "$0")" || exit 1
 # used to deploy
 # update the values in the variables below to change your deployment
 
-TEMPLATE=../deploy-code-server-template.yml
+TEMPLATE=../../openshift/deploy-code-server-template.yml
 APPLICATION_NAME=custom-code-server
 VOLUME_SIZE=5Gi
-CODE_SERVER_MEM_LIMIT=2Gi
-CODE_SERVER_CPU_LIMIT=1700m
-WEBDAV_MEM_LIMIT=256M
-WEBDAV_CPU_LIMIT=300m
+CODE_SERVER_MEM_LIMIT=750M
+CODE_SERVER_CPU_LIMIT=500m
+WEBDAV_MEM_LIMIT=128M
+WEBDAV_CPU_LIMIT=100m
 CODE_SERVER_PASSWORD="CodeServer"
 
 oc process -f "$TEMPLATE" \

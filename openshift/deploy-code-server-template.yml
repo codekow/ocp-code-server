@@ -229,9 +229,6 @@ objects:
               limits:
                 cpu: ${CODE_SERVER_CPU_LIMIT}
                 memory: ${CODE_SERVER_MEM_LIMIT}
-              requests:
-                cpu: 750m
-                memory: 512Mi
             volumeMounts:
               - mountPath: /home/coder
                 name: coder-home

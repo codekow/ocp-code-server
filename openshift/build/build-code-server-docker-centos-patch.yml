@@ -5,6 +5,9 @@ metadata:
     build: custom-code-server
   name: custom-code-server-docker-centos-patch
 spec:
+  resources:
+    limits:
+      memory: 1Gi
   output:
     to:
       kind: ImageStreamTag
