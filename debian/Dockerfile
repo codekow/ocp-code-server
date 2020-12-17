@@ -40,7 +40,6 @@ RUN apt-get update && \
     curl gnupg wget \
     dnsutils traceroute \
     git gcc g++ cmake make \
-    python3 python3-pip python3-venv python3-dev \
     libcurl4-openssl-dev libssl-dev pkg-config \
     bash-completion pass rsync tree zsh zip unzip \
     krb5-user libkrb5-dev \
