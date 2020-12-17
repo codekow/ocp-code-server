@@ -49,9 +49,52 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/* && \
     chmod g+w /etc/passwd
 
+# install tools needed to compile python
+RUN apt-get update && \
+    apt-get install build-essential zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libsqlite3-dev libreadline-dev libffi-dev curl libbz2-dev && \
+    rm -rf /var/lib/apt/lists/* 
+
+ARG PYTHON_36_VERSION=3.6.12
+RUN curl -O https://www.python.org/ftp/python/${PYTHON_36_VERSION}/Python-${PYTHON_36_VERSION}.tar.xz && \
+    tar -xf Python-${PYTHON_36_VERSION}.tar.xz && \
+    cd Python-${PYTHON_36_VERSION} && \
+    ./configure --enable-optimizations --enable-loadable-sqlite-extensions && \
+    make -j $(nproc) && \
+    make altinstall && \
+    cd .. && rm -r Python-${PYTHON_36_VERSION}
+
+ARG PYTHON_37_VERSION=3.7.9
+RUN curl -O https://www.python.org/ftp/python/${PYTHON_37_VERSION}/Python-${PYTHON_37_VERSION}.tar.xz && \
+    tar -xf Python-${PYTHON_37_VERSION}.tar.xz && \
+    cd Python-${PYTHON_37_VERSION} && \
+    ./configure --enable-optimizations --enable-loadable-sqlite-extensions && \
+    make -j $(nproc) && \
+    make altinstall && \
+    cd .. && rm -r Python-${PYTHON_37_VERSION}
+
+ARG PYTHON_38_VERSION=3.8.6
+RUN curl -O https://www.python.org/ftp/python/${PYTHON_38_VERSION}/Python-${PYTHON_38_VERSION}.tar.xz && \
+    tar -xf Python-${PYTHON_38_VERSION}.tar.xz && \
+    cd Python-${PYTHON_38_VERSION} && \
+    ./configure --enable-optimizations --enable-loadable-sqlite-extensions && \
+    make -j $(nproc) && \
+    make altinstall && \
+    cd .. && rm -r Python-${PYTHON_38_VERSION}
+
+ARG PYTHON_39_VERSION=3.9.1
+RUN curl -O https://www.python.org/ftp/python/${PYTHON_39_VERSION}/Python-${PYTHON_39_VERSION}.tar.xz && \
+    tar -xf Python-${PYTHON_39_VERSION}.tar.xz && \
+    cd Python-${PYTHON_39_VERSION} && \
+    ./configure --enable-optimizations --enable-loadable-sqlite-extensions && \
+    make -j $(nproc) && \
+    make altinstall && \
+    cd .. && rm -r Python-${PYTHON_39_VERSION}
+
 # fix: alias python / pip 
-RUN ln -s /usr/bin/python3 /usr/local/bin/python && \
-    ln -s /usr/bin/pip3 /usr/local/bin/pip
+ARG PYTHON_DEFAULT=3.8
+RUN rm /usr/local/bin/python; rm /usr/local/bin/pip; \
+    ln -s /usr/local/bin/python${PYTHON_DEFAULT} /usr/local/bin/python && \
+    ln -s /usr/local/bin/pip${PYTHON_DEFAULT} /usr/local/bin/pip
 
 # install: oc
 ARG OC3_VERSION="3.11.318"
