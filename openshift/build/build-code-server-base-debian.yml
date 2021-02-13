@@ -44,7 +44,7 @@ parameters:
 - name: CONTEXT_DIR
   description: "Build Source Files Directory"
   displayName: "Context Directory"
-  value: debian
+  value: debian/base
 - name: BUILD_REF
   description: "Branch Name to build from (default: master)"
 - name: BUILD_URL
