@@ -92,7 +92,7 @@ objects:
     labels:
       build: ${APPLICATION_NAME}
       app.kubernetes.io/instance: code-server
-    name: ${APPLICATION_NAME}-${CONTEXT_DIR}-base
+    name: ${APPLICATION_NAME}-debian-base
     annotations:
       app.openshift.io/vcs-ref: ${BUILD_REF}
       app.openshift.io/vcs-uri: ${BUILD_URL}
@@ -104,7 +104,7 @@ objects:
     output:
       to:
         kind: ImageStreamTag
-        name: ${APPLICATION_NAME}:${CONTEXT_DIR}-base
+        name: ${APPLICATION_NAME}:debian-base
     source:
       contextDir: ${CONTEXT_DIR}
       git:
