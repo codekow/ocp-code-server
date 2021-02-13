@@ -104,7 +104,7 @@ objects:
     output:
       to:
         kind: ImageStreamTag
-        name: ${APPLICATION_NAME}:${CONTEXT_DIR}-base
+        name: ${APPLICATION_NAME}:debian-base
     source:
       contextDir: ${CONTEXT_DIR}
       git:
