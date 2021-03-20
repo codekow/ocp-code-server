@@ -78,7 +78,7 @@ RUN curl -sL https://deb.nodesource.com/setup_12.x -o setup_12.x.sh && \
 
 # install: angular cli
 # setup npm registry / bash completion
-RUN npm install -g @angular/cli@11.0.1 && \
+RUN npm install -g @angular/cli@11.2.5 && \
     npm completion > /etc/bash_completion.d/npm
 
 USER 1001
