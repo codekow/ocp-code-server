@@ -13,7 +13,6 @@ HOME=/home/coder
 # .ssh folder on pod restarts
 if [ -f ${HOME}/.ssh/id_rsa ]; then
     chmod 700 ${HOME}/.ssh
-    chmod 644 ${HOME}/.ssh/*pub
     chmod 600 ${HOME}/.ssh/id_rsa*
 
     if [ -f ${HOME}/.ssh/known_hosts ]; then
