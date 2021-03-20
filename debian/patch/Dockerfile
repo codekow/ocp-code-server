@@ -66,7 +66,7 @@ RUN curl -s "${GUROBI_URL}" | tar zxf - -C /opt && \
     ln -s /usr/bin/python3.7 /opt/gurobi/linux64/bin/python3.7
 
 # install: node v12
-ARG NODE_HASH="cf82fb2938b5577849dc0042757165a52c74083b4c69b6bd16078dbc7d6273c8"
+ARG NODE_HASH="072bc73a8c73b34d6773b791ccdefc204470463993bc2cba2385e0d342206539"
 # hadolint ignore=SC2002,DL3008 
 RUN curl -sL https://deb.nodesource.com/setup_12.x -o setup_12.x.sh && \
     sha256sum < setup_12.x.sh && \

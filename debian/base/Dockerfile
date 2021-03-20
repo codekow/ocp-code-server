@@ -1,4 +1,4 @@
-FROM codercom/code-server:3.7.2
+FROM codercom/code-server:3.9.1
 
 ### Atomic/OpenShift Labels - https://github.com/projectatomic/ContainerApplicationGenericLabels
 LABEL name="custom-code-server" \
