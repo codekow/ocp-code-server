@@ -54,7 +54,7 @@ ENV PATH=${PATH}:${GUROBI_HOME}/bin
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${GUROBI_HOME}/lib
 
 # TODO - get gurobi into pypi
-ARG GUROBI_URL=https://packages.gurobi.com/9.0/gurobi9.1.1_linux64.tar.gz
+ARG GUROBI_URL=https://packages.gurobi.com/9.1/gurobi9.1.1_linux64.tar.gz
 
 # Should update this install step to not use cd (without breaking it)
 # hadolint ignore=DL3003
