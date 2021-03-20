@@ -46,7 +46,8 @@ parameters:
   displayName: "Context Directory"
   value: debian/base
 - name: BUILD_REF
-  description: "Branch Name to build from (default: master)"
+  description: "Branch Name to build from (default: main)"
+  value: main
 - name: BUILD_URL
   description: "URL to git repo"
   value: "https://github.com/happykow/ocp-code-server.git"
