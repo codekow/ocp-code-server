@@ -45,12 +45,12 @@ ENV PATH=${PATH}:${GUROBI_HOME}/bin
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${GUROBI_HOME}/lib
 
 # TODO - get gurobi into pypi
-ARG GUROBI_URL=https://packages.gurobi.com/9.0/gurobi9.0.2_linux64.tar.gz
+ARG GUROBI_URL=https://packages.gurobi.com/9.1/gurobi9.1.1_linux64.tar.gz
 
 # Should update this install step to not use cd (without breaking it)
 # hadolint ignore=DL3003
 RUN curl -s "${GUROBI_URL}" | tar zxf - -C /opt && \
-    mv /opt/gurobi902 /opt/gurobi && \
+    mv /opt/gurobi911 /opt/gurobi && \
     cd "${GUROBI_HOME}" && \
     python3 setup.py install && \
     ln -s /usr/bin/python3.6 /opt/gurobi/linux64/bin/python3.6
@@ -62,7 +62,7 @@ RUN dnf -y module install nodejs:12 && \
 
 # install: angular cli
 # setup npm registry / bash completion
-RUN npm install -g @angular/cli@11.0.1 && \
+RUN npm install -g @angular/cli@11.2.5 && \
     npm completion > /etc/bash_completion.d/npm
 
 USER 1001

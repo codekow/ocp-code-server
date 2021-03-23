@@ -1,4 +1,4 @@
-FROM codercom/code-server:3.7.2
+FROM codercom/code-server:3.9.1
 
 ### Atomic/OpenShift Labels - https://github.com/projectatomic/ContainerApplicationGenericLabels
 LABEL name="custom-code-server" \
@@ -17,7 +17,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # fix: node CA trust defaults for requests / node
 ENV REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
-ENV NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt
+#ENV NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt
 
 # fix: path for local bin
 ENV PATH=$PATH:/home/coder/.local/bin

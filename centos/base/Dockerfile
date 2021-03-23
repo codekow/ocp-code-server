@@ -4,7 +4,7 @@ FROM centos:8
 LABEL name="custom-code-server" \
       maintainer="cory@happykow.com" \
       vendor="Coder" \
-      version="3.7.2" \
+      version="3.9.1" \
       summary="Custom Code Server" \
       description="Custom Code Server base image with a basic collection of tools"
 
@@ -17,7 +17,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # fix: node CA trust defaults for requests / node
 ENV REQUESTS_CA_BUNDLE=/etc/pki/tls/certs/ca-bundle.crt
-ENV NODE_EXTRA_CA_CERTS=/etc/pki/tls/certs/ca-bundle.crt
+#ENV NODE_EXTRA_CA_CERTS=/etc/pki/tls/certs/ca-bundle.crt
 
 # fix: path for local bin
 ENV PATH=$PATH:/home/coder/.local/bin
@@ -32,7 +32,7 @@ COPY bin /usr/local/bin
 
 ARG CODE_SERVER_VERSION
 
-RUN rpm -ivh https://github.com/cdr/code-server/releases/download/v${CODE_SERVER_VERSION:-3.7.2}/code-server-${CODE_SERVER_VERSION:-3.7.2}-amd64.rpm && \
+RUN rpm -ivh https://github.com/cdr/code-server/releases/download/v${CODE_SERVER_VERSION:-3.9.1}/code-server-${CODE_SERVER_VERSION:-3.9.1}-amd64.rpm && \
     dnf update -y && \
     dnf install -y \
     nss_wrapper \
