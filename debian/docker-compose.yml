@@ -13,4 +13,21 @@ services:
       - PASSWORD=thisisfine
     volumes:
       - ~/coder:/home/coder
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.code.loadbalancer.server.port=1337"
+      - "traefik.http.routers.code.service=code"
+      - "traefik.http.routers.code.rule=hostregexp(`{host:[a-z-.]+}`) && PathPrefix(`/code`)"
+      - "traefik.http.routers.code.entrypoints=web,websecure,pub-websecure"
+      - "traefik.http.routers.code.middlewares=code-stripprefix"
+      - "traefik.http.routers.code.tls=true"
+      - "traefik.http.middlewares.code-stripprefix.stripprefix.prefixes=/code"
+
+      - "traefik.http.services.code-demo.loadbalancer.server.port=8080"
+      - "traefik.http.routers.code-demo.service=code-demo"
+      - "traefik.http.routers.code-demo.rule=hostregexp(`{host:[a-z-.]+}`) && PathPrefix(`/demo`)"
+      - "traefik.http.routers.code-demo.entrypoints=web,websecure,pub-websecure"
+      - "traefik.http.routers.code-demo.middlewares=code-demo-stripprefix"
+      - "traefik.http.routers.code-demo.tls=true"
+      - "traefik.http.middlewares.code-demo-stripprefix.stripprefix.prefixes=/demo"
 
