@@ -1,4 +1,4 @@
-FROM custom-code-server:debian
+FROM custom-code-server:debian-base
 
 USER root
 
@@ -66,7 +66,7 @@ RUN curl -s "${GUROBI_URL}" | tar zxf - -C /opt && \
     ln -s /usr/bin/python3.7 /opt/gurobi/linux64/bin/python3.7
 
 # install: node v12
-ARG NODE_HASH="072bc73a8c73b34d6773b791ccdefc204470463993bc2cba2385e0d342206539"
+ARG NODE_HASH="f40141c449a6901f9a6aaf53b6e92d2e392a1ed8b41bf865e41f2211afaebba5"
 # hadolint ignore=SC2002,DL3008 
 RUN curl -sL https://deb.nodesource.com/setup_12.x -o setup_12.x.sh && \
     sha256sum < setup_12.x.sh && \
@@ -81,4 +81,4 @@ RUN curl -sL https://deb.nodesource.com/setup_12.x -o setup_12.x.sh && \
 RUN npm install -g @angular/cli@11.2.5 && \
     npm completion > /etc/bash_completion.d/npm
 
-USER 1001
+USER coder

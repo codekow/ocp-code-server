@@ -69,7 +69,6 @@ RUN curl -sL "${OC3_URL}" -o oc.tgz && \
     tar -C /usr/local/bin -zxf oc.tgz oc && \
     mv /usr/local/bin/oc /usr/local/bin/oc-${OC3_VERSION%.*} && \
     /usr/local/bin/oc-${OC3_VERSION%.*} completion bash > /etc/bash_completion.d/oc-${OC3_VERSION%.*} && \
-    
     curl -sL "${OC4_URL}" -o oc.tgz && \
     sha256sum < oc.tgz && \
     [ "$OC4_HASH  -" = "$(sha256sum < oc.tgz)" ] && \
@@ -78,14 +77,13 @@ RUN curl -sL "${OC3_URL}" -o oc.tgz && \
     mv /usr/local/bin/oc /usr/local/bin/oc-${OC4_VERSION} && \
     /usr/local/bin/oc-${OC4_VERSION} completion bash > /etc/bash_completion.d/oc-${OC4_VERSION} && \
     rm oc.tgz && \
-
     ln -s /usr/local/bin/oc-wrapper.sh /usr/local/bin/oc
 
 # expose ports for local app / s2i
 EXPOSE 1337 8000 8050 8080
 
 WORKDIR /home/coder
-USER 1001
+USER coder
 
 VOLUME /home/coder
 

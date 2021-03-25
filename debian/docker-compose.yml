@@ -1,0 +1,16 @@
+version: "3.7"
+
+services:
+  code-server:
+    image: custom-code-server:latest
+    build:
+      context: ./patch
+      dockerfile: Dockerfile
+    ports:
+      - 1337:1337
+      - 8080:8080
+    environment:
+      - PASSWORD=thisisfine
+    volumes:
+      - ~/coder:/home/coder
+

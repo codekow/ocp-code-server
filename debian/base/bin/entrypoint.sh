@@ -24,19 +24,18 @@ NSS_WRAPPER_PASSWD=/tmp/passwd.nss_wrapper
 
 if ! whoami &> /dev/null; then
     if [ -w /etc/passwd ]; then
-        grep -v -e ^${USER_NAME:-coder} -e ^"${USER_ID}" /etc/passwd > $NSS_WRAPPER_PASSWD
+        grep -v -e ^${USER_NAME:-coder} -e ^"${USER_ID:-coder}" /etc/passwd > $NSS_WRAPPER_PASSWD
         echo "${USER_NAME:-coder}:x:${USER_ID}:0:${USER_NAME:-coder} user:${HOME}:/bin/bash" >> $NSS_WRAPPER_PASSWD
         cat $NSS_WRAPPER_PASSWD > /etc/passwd
     fi
 fi
 
 if [ ! -w /etc/passwd -a x"${USER_ID}" != x"0" -a x"${USER_ID}" != x"1001" ]; then
-    cp /etc/passwd $NSS_WRAPPER_PASSWD
-
-    echo "${USER_NAME:-coder}:x:$(id -u):0:${USER_NAME:-coder} user:${HOME}:/bin/bash" >> $NSS_WRAPPER_PASSWD
+    grep -v -e ^${USER_NAME:-coder} -e ^"${USER_ID:-coder}" /etc/passwd > $NSS_WRAPPER_PASSWD
+    echo "${USER_NAME:-coder}:x:${USER_ID}:0:${USER_NAME:-coder} user:${HOME}:/bin/bash" >> $NSS_WRAPPER_PASSWD
 
     export NSS_WRAPPER_PASSWD
-    export LD_PRELOAD=/usr/lib64/libnss_wrapper.so
+    export LD_PRELOAD=/usr/lib/libnss_wrapper.so
 
 fi
 
