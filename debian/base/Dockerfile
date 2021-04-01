@@ -1,4 +1,4 @@
-FROM codercom/code-server:3.9.1
+FROM codercom/code-server:3.9.2
 
 ### Atomic/OpenShift Labels - https://github.com/projectatomic/ContainerApplicationGenericLabels
 LABEL name="custom-code-server" \
@@ -86,6 +86,12 @@ WORKDIR /home/coder
 USER coder
 
 VOLUME /home/coder
+
+HEALTHCHECK --interval=30s \
+            --timeout=60s \
+            --start-period=2s \
+            --retries=3 \
+  CMD curl -sf http://127.0.0.1:1337 || exit 1
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD ["dumb-init", "fixuid", "-q", "code-server", "--bind-addr", "0.0.0.0:1337", ".", "--disable-telemetry"]
