@@ -89,7 +89,6 @@ VOLUME /home/coder
 
 HEALTHCHECK --interval=30s \
             --timeout=60s \
-            --start-period=2s \
             --retries=3 \
   CMD curl -sf http://127.0.0.1:1337 || exit 1
 
