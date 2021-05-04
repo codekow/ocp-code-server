@@ -27,7 +27,7 @@ if [ -z "$OC_VERSION" ]; then
             OC_VERSION=4.4
             ;;
         1.18|1.18+)
-            OC_VERSION=4.4
+            OC_VERSION=4.6
             ;;
     esac
 fi
