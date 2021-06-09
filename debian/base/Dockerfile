@@ -1,8 +1,8 @@
-FROM codercom/code-server:3.9.3
+FROM codercom/code-server:3.10.2
 
 ### Atomic/OpenShift Labels - https://github.com/projectatomic/ContainerApplicationGenericLabels
 LABEL name="custom-code-server" \
-      maintainer="cory@happykow.com" \
+      maintainer="koree@redhat.com" \
       vendor="Coder" \
       version="0.9.1" \
       summary="Custom Code Server" \
@@ -59,7 +59,7 @@ ARG OC3_HASH="45051b28bba343b81ab279fbf670535cc92de7140dc8d73d00327ee04e6d666c"
 ARG OC3_URL="https://mirror.openshift.com/pub/openshift-v3/clients/${OC3_VERSION}/linux/oc.tar.gz"
 
 ARG OC4_VERSION="4.6"
-ARG OC4_HASH="5b1bdd3f770717f705b91a9ed3b0dc418cd37a6c612953bbcf08593a167c634a"
+ARG OC4_HASH="874c02ff3907fc7533a26ef1758338582dbe5fa8c40acfa56b78e0ab06c1ede5"
 ARG OC4_URL="https://mirror.openshift.com/pub/openshift-v4/clients/oc/${OC4_VERSION}/linux/oc.tar.gz"
 
 RUN curl -sL "${OC3_URL}" -o oc.tgz && \

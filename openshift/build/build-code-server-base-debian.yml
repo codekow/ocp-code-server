@@ -56,7 +56,7 @@ parameters:
   value: "docker.io/codercom/code-server"
 - name: DOCKER_IMAGE_TAG
   description: "Base docker URI for building"
-  value: "3.9.3"
+  value: "3.10.2"
 objects:
 - kind: ImageStream
   apiVersion: image.openshift.io/v1
