@@ -2,7 +2,7 @@
 
 cd "$(dirname "$0")" || exit 1
 
-WEBDAV_GIT_URL=https://raw.githubusercontent.com/happykow/webdav/main/node/openshift/build
+WEBDAV_GIT_URL=https://raw.githubusercontent.com/codekow/webdav/main/node/openshift/build
 WEBDAV_IMAGE=${WEBDAV_GIT_URL}/imagestream-webdav.yml
 WEBDAV_BUILD=${WEBDAV_GIT_URL}/buildconfig-webdav.yml
 

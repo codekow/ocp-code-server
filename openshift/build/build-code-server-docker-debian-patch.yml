@@ -23,7 +23,7 @@ spec:
   source:
     contextDir: debian/patch
     git:
-      uri: "https://github.com/happykow/ocp-code-server.git"
+      uri: "https://github.com/codekow/ocp-code-server.git"
       ref: main
     type: Git
 status:

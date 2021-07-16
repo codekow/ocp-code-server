@@ -2,7 +2,7 @@ FROM centos:8
 
 ### Atomic/OpenShift Labels - https://github.com/projectatomic/ContainerApplicationGenericLabels
 LABEL name="custom-code-server" \
-      maintainer="cory@happykow.com" \
+      maintainer="cory@codekow.com" \
       vendor="Coder" \
       version="3.10.2" \
       summary="Custom Code Server" \
