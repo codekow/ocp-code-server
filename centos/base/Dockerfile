@@ -57,8 +57,8 @@ ARG OC3_VERSION="3.11.318"
 ARG OC3_HASH="45051b28bba343b81ab279fbf670535cc92de7140dc8d73d00327ee04e6d666c"
 ARG OC3_URL="https://mirror.openshift.com/pub/openshift-v3/clients/${OC3_VERSION}/linux/oc.tar.gz"
 
-ARG OC4_VERSION="stable-4.8"
-ARG OC4_HASH="756b3d1c8bb675b92f112525cc1d2253952b32ba7e5c71dd1b7a4895bc8511e9"
+ARG OC4_VERSION="4.8.3"
+ARG OC4_HASH="7d02831a2b3ed599cdce3b89aa833ba46207f130a6c057f4540fc0bf7f79917f"
 ARG OC4_URL="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${OC4_VERSION}/openshift-client-linux.tar.gz"
 
 RUN curl -sL "${OC3_URL}" -o oc.tgz && \
