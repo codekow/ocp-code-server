@@ -1,4 +1,4 @@
-FROM custom-code-server:centos
+FROM custom-code-server:centos-base
 
 USER root
 
