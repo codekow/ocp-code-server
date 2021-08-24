@@ -12,8 +12,8 @@ metadata:
     description: Deploy VS Code Server in OpenShift
     iconClass: icon-python
     tags: python,vscode
-    openshift.io/documentation-url: "https://github.com/happykow/ocp-code-server" 
-    openshift.io/support-url: "https://github.com/happykow/ocp-code-server/issues"
+    openshift.io/documentation-url: "https://github.com/codekow/ocp-code-server" 
+    openshift.io/support-url: "https://github.com/codekow/ocp-code-server/issues"
     template.openshift.io/bindable: "false"
 parameters:
 - name: APPLICATION_NAME
@@ -147,8 +147,8 @@ objects:
       app: "${APPLICATION_NAME}"
       app.kubernetes.io/name: "${APPLICATION_NAME}"
     annotations:
-      openshift.io/documentation-url: https://github.com/happykow/ocp-code-server
-      openshift.io/support-url: https://github.com/happykow/ocp-code-server/issues
+      openshift.io/documentation-url: https://github.com/codekow/ocp-code-server
+      openshift.io/support-url: https://github.com/codekow/ocp-code-server/issues
   stringData:
     password: ${CODE_SERVER_PASSWORD}
     username: coder
@@ -160,8 +160,8 @@ objects:
       app: "${APPLICATION_NAME}"
       app.kubernetes.io/name: "${APPLICATION_NAME}"
     annotations:
-      openshift.io/documentation-url: "https://github.com/happykow/ocp-code-server" 
-      openshift.io/support-url: "https://github.com/happykow/ocp-code-server/issues"
+      openshift.io/documentation-url: "https://github.com/codekow/ocp-code-server" 
+      openshift.io/support-url: "https://github.com/codekow/ocp-code-server/issues"
   spec:
     accessModes:
     - ReadWriteOnce
@@ -176,8 +176,8 @@ objects:
       app: "${APPLICATION_NAME}"
       app.kubernetes.io/name: "${APPLICATION_NAME}"
     annotations:
-      openshift.io/documentation-url: "https://github.com/happykow/ocp-code-server" 
-      openshift.io/support-url: "https://github.com/happykow/ocp-code-server/issues"
+      openshift.io/documentation-url: "https://github.com/codekow/ocp-code-server" 
+      openshift.io/support-url: "https://github.com/codekow/ocp-code-server/issues"
   spec:
     replicas: 1
     selector:

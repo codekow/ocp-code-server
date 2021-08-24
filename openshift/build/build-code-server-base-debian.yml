@@ -12,8 +12,8 @@ metadata:
     description: Deploy VS Code Server with persistent volume
     iconClass: icon-python
     tags: python,vscode
-    openshift.io/documentation-url: "https://github.com/happykow/ocp-code-server" 
-    openshift.io/support-url: "https://github.com/happykow/ocp-code-server/issues"
+    openshift.io/documentation-url: "https://github.com/codekow/ocp-code-server" 
+    openshift.io/support-url: "https://github.com/codekow/ocp-code-server/issues"
     template.openshift.io/bindable: "false"
 parameters:
 - name: APPLICATION_NAME
@@ -50,13 +50,13 @@ parameters:
   value: main
 - name: BUILD_URL
   description: "URL to git repo"
-  value: "https://github.com/happykow/ocp-code-server.git"
+  value: "https://github.com/codekow/ocp-code-server.git"
 - name: DOCKER_IMAGE_BASE
   description: "Base docker URI for building"
   value: "docker.io/codercom/code-server"
 - name: DOCKER_IMAGE_TAG
   description: "Base docker URI for building"
-  value: "3.10.2"
+  value: "3.11.0"
 objects:
 - kind: ImageStream
   apiVersion: image.openshift.io/v1
