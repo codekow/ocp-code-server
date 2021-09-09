@@ -21,10 +21,10 @@ fi
 if [ -z "$OC_VERSION" ]; then
     case "$KUBECTL_VERSION" in
         1.11|1.11+)
-            OC_VERSION=3.11
+            OC_VERSION=${OC3_VERSION%.*}
             ;;
         *)
-            OC_VERSION=4.6
+            OC_VERSION=${OC4_VERSION%.*}
             ;;
     esac
 fi
