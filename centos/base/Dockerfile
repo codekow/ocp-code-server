@@ -4,7 +4,7 @@ FROM centos:8
 LABEL name="custom-code-server" \
       maintainer="koree@redhat.com" \
       vendor="Coder" \
-      version="3.11.1" \
+      version="3.12.0" \
       summary="Custom Code Server" \
       description="Custom Code Server base image with a basic collection of tools"
 
@@ -32,7 +32,7 @@ COPY bin /usr/local/bin
 
 ARG CODE_SERVER_VERSION
 
-RUN rpm -ivh https://github.com/cdr/code-server/releases/download/v${CODE_SERVER_VERSION:-3.11.1}/code-server-${CODE_SERVER_VERSION:-3.11.1}-amd64.rpm && \
+RUN rpm -ivh https://github.com/cdr/code-server/releases/download/v${CODE_SERVER_VERSION:-3.12.0}/code-server-${CODE_SERVER_VERSION:-3.12.0}-amd64.rpm && \
     dnf update -y && \
     dnf install -y \
     nss_wrapper \
@@ -68,7 +68,6 @@ RUN curl -sL "${OC3_URL}" -o oc.tgz && \
     tar -C /usr/local/bin -zxf oc.tgz oc && \
     mv /usr/local/bin/oc /usr/local/bin/oc-${OC3_VERSION%.*} && \
     /usr/local/bin/oc-${OC3_VERSION%.*} completion bash > /etc/bash_completion.d/oc-${OC3_VERSION%.*} && \
-    
     curl -sL "${OC4_URL}" -o oc.tgz && \
     sha256sum < oc.tgz && \
     [ "$OC4_HASH  -" = "$(sha256sum < oc.tgz)" ] && \
@@ -77,7 +76,6 @@ RUN curl -sL "${OC3_URL}" -o oc.tgz && \
     mv /usr/local/bin/oc /usr/local/bin/oc-${OC4_VERSION%.*} && \
     /usr/local/bin/oc-${OC4_VERSION%.*} completion bash > /etc/bash_completion.d/oc-${OC4_VERSION%.*} && \
     rm oc.tgz && \
-
     ln -s /usr/local/bin/oc-wrapper.sh /usr/local/bin/oc
 
 # expose ports for local app / s2i

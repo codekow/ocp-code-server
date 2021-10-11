@@ -1,10 +1,10 @@
-FROM codercom/code-server:3.11.1
+FROM codercom/code-server:3.12.0
 
 ### Atomic/OpenShift Labels - https://github.com/projectatomic/ContainerApplicationGenericLabels
 LABEL name="custom-code-server" \
       maintainer="koree@redhat.com" \
       vendor="Coder" \
-      version="3.11.1" \
+      version="3.12.0" \
       summary="Custom Code Server" \
       description="Custom Code Server base image with a basic collection of tools"
 
