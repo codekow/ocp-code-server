@@ -1,10 +1,10 @@
-FROM codercom/code-server:3.11.1
+FROM codercom/code-server:3.12.0
 
 ### Atomic/OpenShift Labels - https://github.com/projectatomic/ContainerApplicationGenericLabels
 LABEL name="custom-code-server" \
       maintainer="koree@redhat.com" \
       vendor="Coder" \
-      version="3.11.1" \
+      version="3.12.0" \
       summary="Custom Code Server" \
       description="Custom Code Server base image with a basic collection of tools"
 
@@ -54,12 +54,12 @@ RUN ln -s /usr/bin/python3 /usr/local/bin/python && \
     ln -s /usr/bin/pip3 /usr/local/bin/pip
 
 # install: oc
-ARG OC3_VERSION="3.11.318"
-ARG OC3_HASH="45051b28bba343b81ab279fbf670535cc92de7140dc8d73d00327ee04e6d666c"
+ENV OC3_VERSION="3.11.374"
+ARG OC3_HASH="1fb49e5548c649d8bab15ac4dca7a77225747b1957c2082f8e47ccbb9120356e"
 ARG OC3_URL="https://mirror.openshift.com/pub/openshift-v3/clients/${OC3_VERSION}/linux/oc.tar.gz"
 
-ARG OC4_VERSION="4.8.3"
-ARG OC4_HASH="7d02831a2b3ed599cdce3b89aa833ba46207f130a6c057f4540fc0bf7f79917f"
+ENV OC4_VERSION="4.8.10"
+ARG OC4_HASH="9d727adc9438bb7431344a7349ee88fbf05b5dbb856e678013a15c084b72cc9d"
 ARG OC4_URL="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${OC4_VERSION}/openshift-client-linux.tar.gz"
 
 RUN curl -sL "${OC3_URL}" -o oc.tgz && \
@@ -74,8 +74,8 @@ RUN curl -sL "${OC3_URL}" -o oc.tgz && \
     [ "$OC4_HASH  -" = "$(sha256sum < oc.tgz)" ] && \
     echo "OC4_HASH: PASSED" && \
     tar -C /usr/local/bin -zxf oc.tgz oc && \
-    mv /usr/local/bin/oc /usr/local/bin/oc-${OC4_VERSION} && \
-    /usr/local/bin/oc-${OC4_VERSION} completion bash > /etc/bash_completion.d/oc-${OC4_VERSION} && \
+    mv /usr/local/bin/oc /usr/local/bin/oc-${OC4_VERSION%.*} && \
+    /usr/local/bin/oc-${OC4_VERSION%.*} completion bash > /etc/bash_completion.d/oc-${OC4_VERSION%.*} && \
     rm oc.tgz && \
     ln -s /usr/local/bin/oc-wrapper.sh /usr/local/bin/oc
 

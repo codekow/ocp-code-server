@@ -20,6 +20,12 @@ if [ -f ${HOME}/.ssh/id_rsa ]; then
     fi
 fi
 
+if [ -e /usr/lib/x86_64-linux-gnu/libnss_wrapper.so ]; then
+    LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libnss_wrapper.so
+else
+    LD_PRELOAD=/usr/lib/libnss_wrapper.so
+fi
+
 NSS_WRAPPER_PASSWD=/tmp/passwd.nss_wrapper
 
 if ! whoami &> /dev/null; then
@@ -35,7 +41,7 @@ if [ ! -w /etc/passwd -a x"${USER_ID}" != x"0" -a x"${USER_ID}" != x"1001" ]; th
     echo "${USER_NAME:-coder}:x:${USER_ID}:0:${USER_NAME:-coder} user:${HOME}:/bin/bash" >> $NSS_WRAPPER_PASSWD
 
     export NSS_WRAPPER_PASSWD
-    export LD_PRELOAD=/usr/lib/libnss_wrapper.so
+    export LD_PRELOAD
 
 fi
 

@@ -1,6 +1,11 @@
 #!/bin/bash
 
-build() {
+latest_tag() {
+#tag debian latest
+docker tag custom-code-server:debian custom-code-server:latest
+}
+
+code_server_build() {
 NAME=custom-code-server
 TYPE=$1
 
@@ -13,8 +18,7 @@ docker build -t "${NAME}:${TYPE}" .
 popd
 }
 
-build debian
-build centos
+#build debian
+#build centos
 
-#tag debian latest
-docker tag custom-code-server:debian custom-code-server:latest
+echo "usage: code_server_build debian && latest_tag"
