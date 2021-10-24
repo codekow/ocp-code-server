@@ -2,7 +2,9 @@
 
 latest_tag() {
 #tag debian latest
-docker tag custom-code-server:debian custom-code-server:latest
+
+TYPE=$1
+docker tag custom-code-server:${TYPE} custom-code-server:latest
 }
 
 code_server_build() {
@@ -16,9 +18,12 @@ cd ../patch
 docker build -t "${NAME}:${TYPE}" .
 
 popd
+
+latest_tag ${TYPE}
+
 }
 
 #build debian
 #build centos
 
-echo "usage: code_server_build debian && latest_tag"
+echo "usage: code_server_build {debian,centos,ubi8}"
