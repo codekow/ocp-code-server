@@ -25,7 +25,7 @@ ENV PATH=$PATH:/home/coder/.local/bin
 WORKDIR /home/coder
 
 # setup: basic home files
-# COPY skel /etc/skel
+COPY skel /etc/skel
 
 # setup: entrypoint and other scripts over 
 COPY bin /usr/local/bin

@@ -41,7 +41,7 @@ if [ ! -w /etc/passwd -a x"${USER_ID}" != x"0" -a x"${USER_ID}" != x"1001" ]; th
 fi
 
 # Initalize /home/coder (quickfix)
-cp -an /etc/skel/.{bash,zsh}* /home/coder
+cp -an /etc/skel/.{bash,profile,screenrc}* /home/coder
 
 # setup the npm defaults if the script exists
 if [ -f /usr/local/bin/npm-setup.sh ]; then
