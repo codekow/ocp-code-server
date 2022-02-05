@@ -1,12 +1,13 @@
-FROM docker.io/codercom/code-server:3.12.0
+FROM docker.io/codercom/code-server:4.0.2
 
-### Atomic/OpenShift Labels - https://github.com/projectatomic/ContainerApplicationGenericLabels
+### https://github.com/opencontainers/image-spec/blob/main/annotations.md
 LABEL name="custom-code-server" \
       maintainer="koree@redhat.com" \
-      vendor="Coder" \
-      version="3.12.0" \
+      version="4.0.2" \
       summary="Custom Code Server" \
-      description="Custom Code Server base image with a basic collection of tools"
+      org.opencontainers.image.description.vendor="codercom" \
+      org.opencontainers.image.description="Custom Code Server base image with a basic collection of tools" \
+      org.opencontainers.image.source="https://github.com/codekow/code-server"
 
 ARG CODE_SERVER_VERSION
 

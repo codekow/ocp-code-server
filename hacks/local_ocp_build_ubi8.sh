@@ -1,9 +1,11 @@
 #!/bin/bash
 
+VERSION_TAG=8.5
+
 # import container image streams
 init_image_stream(){
-oc import-image ubi8:8.5 \
-  --from=registry.access.redhat.com/ubi8/ubi:8.5 \
+oc import-image ubi8:${${VERSION_TAG}} \
+  --from=registry.access.redhat.com/ubi8/ubi:${${VERSION_TAG}} \
   --scheduled \
   --confirm
 
@@ -16,7 +18,7 @@ build_base(){
 oc new-build \
   --binary \
   --name=custom-code-server-ubi8-base \
-  --image-stream=ubi8:8.5 \
+  --image-stream=ubi8:${${VERSION_TAG}} \
   --to=custom-code-server:ubi8-base
 
 oc patch bc custom-code-server-ubi8-base \
@@ -35,7 +37,7 @@ oc new-build \
   --name=custom-code-server-ubi8-patch \
   --image-stream=custom-code-server:ubi8-base \
   --to custom-code-server:ubi8 \
-  --allow-missing-imagestream-tags
+  --allow-missing-imagestream-${VERSION_TAG}s
 
 oc patch bc custom-code-server-ubi8-patch \
   --type='json' \

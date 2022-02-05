@@ -1,9 +1,11 @@
 #!/bin/bash
 
+VERSION_TAG=4.0.2
+
 # import container image streams
 init_image_stream(){
-oc import-image code-server:3.12.0 \
-  --from=docker.io/codercom/code-server:3.12.0 \
+oc import-image code-server:${VERSION_TAG} \
+  --from=docker.io/codercom/code-server:${VERSION_TAG} \
   --scheduled \
   --confirm
 
@@ -16,7 +18,7 @@ build_base(){
 oc new-build \
   --binary \
   --name=custom-code-server-codercom-base \
-  --image-stream=code-server:3.12.0 \
+  --image-stream=code-server:${VERSION_TAG} \
   --to=custom-code-server:codercom-base
 
 oc patch bc custom-code-server-codercom-base \

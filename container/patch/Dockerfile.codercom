@@ -20,7 +20,6 @@ RUN apt-get update && \
     libcurl4-openssl-dev libssl-dev pkg-config \
     bash-completion rsync zip unzip \
     krb5-user libkrb5-dev \
-    tree zsh pass tmux screen \
     nano vim jq && \
     rm -rf /var/lib/apt/lists/* && \
     chmod g+w /etc/passwd
@@ -31,8 +30,8 @@ RUN ln -s /usr/bin/python3 /usr/local/bin/python && \
 
 # install: skopeo
 # hadolint ignore=DL3008
-RUN echo 'deb http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_10/ /' > /etc/apt/sources.list.d/devel:kubic:libcontainers-stable.list && \
-    curl -sL https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_10/Release.key | apt-key add - && \
+RUN echo 'deb http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_11/ /' > /etc/apt/sources.list.d/devel:kubic:libcontainers-stable.list && \
+    curl -sL https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_11/Release.key | apt-key add - && \
     apt-get update && \
     apt-get -y --no-install-recommends install skopeo && \
     rm -rf /var/lib/apt/lists/*
@@ -40,7 +39,7 @@ RUN echo 'deb http://download.opensuse.org/repositories/devel:/kubic:/libcontain
 # install more tools
 RUN apt-get update && \
     apt-get -y install \
-    pass screen && \
+    tree zsh pass tmux screen && \
     rm -rf /var/lib/apt/lists/*
 
 ## install azure cli tools
