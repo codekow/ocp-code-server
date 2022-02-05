@@ -50,7 +50,7 @@ jobs:
         run: |
           . hacks/local_docker_build.sh
           
-          code_server_build ubi
+          code_server_build ubi8
           code_server_build codercom
           
           TYPE=ubi8
