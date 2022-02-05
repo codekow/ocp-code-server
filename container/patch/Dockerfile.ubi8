@@ -70,14 +70,14 @@ RUN curl -s "${GUROBI_URL}" | tar zxf - -C /opt && \
     python3 setup.py install && \
     ln -s /usr/bin/python3.6 /opt/gurobi/linux64/bin/python3.6
 
-# install: node v12
+# install: node v14
 # hadolint ignore=SC2002,DL3008
-RUN dnf -y module install nodejs:12 && \
+RUN dnf -y module install nodejs:14 && \
     rm -rf /var/cache /var/log/dnf* /var/log/yum.*
 
 # install: angular cli
 # setup npm registry / bash completion
-RUN npm install -g @angular/cli@11.2.5 && \
+RUN npm install -g @angular/cli@v12-lts && \
     npm completion > /etc/bash_completion.d/npm
 
 USER coder
