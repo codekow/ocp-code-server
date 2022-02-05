@@ -6,10 +6,7 @@ name: publish-codercom
 # documentation.
 
 on:
-  schedule:
-    - cron: '16 1 * * *'
   push:
-    #branches: [ main ]
     # Publish semver tags as releases.
     tags: [ 'v*.*.*' ]
   

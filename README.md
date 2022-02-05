@@ -15,9 +15,9 @@ docker run -d \
   -p 8080:8080 \
   -e PASSWORD="thisisnice" \
   -v ${PWD}:/home/coder:z \
-  custom-code-server:latest
+  quay.io/codekow/code-server:latest
 ```
-http://localhost:1337
+URL: http://localhost:1337
 
 ## Quick Start
 Deploy a Custom Code Server (w/ custom build)
