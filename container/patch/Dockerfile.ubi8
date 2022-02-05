@@ -3,6 +3,28 @@ FROM custom-code-server:ubi8-base
 USER root
 
 # install more tools
+
+# install: updates, utils, and python
+# hadolint ignore=DL3008
+RUN dnf update -y && \
+    dnf install -y \
+    nss_wrapper \
+    procps-ng \
+    curl gnupg wget \
+    bind-utils \
+    git gcc gcc-c++ cmake make \
+    python3 python3-pip \
+    pkg-config \
+    bash-completion rsync zip unzip \
+    krb5-workstation \
+    nano vim jq && \
+    dnf clean all && \
+    chmod g+w /etc/passwd
+
+# fix: alias python / pip
+RUN ln -s /usr/bin/python3 /usr/local/bin/python && \
+    ln -s /usr/bin/pip3 /usr/local/bin/pip
+
 RUN dnf update && \
     rm -rf /var/cache /var/log/dnf* /var/log/yum.*
 

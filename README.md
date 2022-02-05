@@ -6,6 +6,7 @@ This repository takes the existing work found @ https://github.com/cdr/code-serv
 adapts it to run on OpenShift.
 
 ## Docker / Podman Usage
+
 ```
 # os w/ selinux
 docker run -d \
@@ -16,6 +17,7 @@ docker run -d \
   -v ${PWD}:/home/coder:z \
   custom-code-server:latest
 ```
+http://localhost:1337
 
 ## Quick Start
 Deploy a Custom Code Server (w/ custom build)
