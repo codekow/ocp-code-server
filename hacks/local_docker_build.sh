@@ -26,4 +26,7 @@ latest_tag ${TYPE}
 #build codercom
 #build centos
 
-echo "usage: code_server_build {codercom,ubi8}"
+echo "
+usage: . $0
+
+       code_server_build {codercom,ubi8}"

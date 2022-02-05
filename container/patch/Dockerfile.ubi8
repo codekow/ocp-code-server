@@ -2,12 +2,11 @@ FROM custom-code-server:ubi8-base
 
 USER root
 
-# install more tools
-
 # install: updates, utils, and python
+
 # hadolint ignore=DL3008
-RUN dnf update -y && \
-    dnf install -y \
+RUN dnf -y update && \
+    dnf -y install \
     nss_wrapper \
     procps-ng \
     curl gnupg wget \
@@ -21,11 +20,13 @@ RUN dnf update -y && \
     dnf clean all && \
     chmod g+w /etc/passwd
 
-# fix: alias python / pip
+# kludge: alias python / pip
 RUN ln -s /usr/bin/python3 /usr/local/bin/python && \
     ln -s /usr/bin/pip3 /usr/local/bin/pip
 
-RUN dnf update && \
+# install: skopeo
+# hadolint ignore=DL3008
+RUN dnf -y install skopeo fuse-overlayfs && \
     rm -rf /var/cache /var/log/dnf* /var/log/yum.*
 
 # see https://docs.microsoft.com/en-us/sql/connect/odbc/linux-mac/installing-the-microsoft-odbc-driver-for-sql-server
@@ -53,11 +54,6 @@ RUN rpm --import https://packages.microsoft.com/keys/microsoft.asc && \
 #    tar -C /opt/app-root/bin -zxf /tmp/kustomize.tar.gz kustomize && \
 #    rm /tmp/kustomize.tar.gz
 
-# install: skopeo
-# hadolint ignore=DL3008
-RUN dnf -y install skopeo fuse-overlayfs && \
-    rm -rf /var/cache /var/log/dnf* /var/log/yum.*
-
 # install: gurobi
 ENV GUROBI_HOME=/opt/gurobi/linux64
 ENV PATH=${PATH}:${GUROBI_HOME}/bin
@@ -84,4 +80,4 @@ RUN dnf -y module install nodejs:12 && \
 RUN npm install -g @angular/cli@11.2.5 && \
     npm completion > /etc/bash_completion.d/npm
 
-USER 1001
+USER coder

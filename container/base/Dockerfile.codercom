@@ -51,10 +51,10 @@ USER coder
 WORKDIR /home/coder
 VOLUME /home/coder
 
-HEALTHCHECK --interval=30s \
-            --timeout=60s \
-            --retries=3 \
-  CMD curl -sf http://127.0.0.1:1337 || exit 1
+# HEALTHCHECK --interval=30s \
+#             --timeout=60s \
+#             --retries=3 \
+#   CMD curl -sf http://127.0.0.1:1337 || exit 1
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD ["dumb-init", "fixuid", "-q", "code-server", "--bind-addr", "0.0.0.0:1337", ".", "--disable-telemetry"]
