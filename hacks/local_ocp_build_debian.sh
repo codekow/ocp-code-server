@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # import container image streams
+init_image_stream(){
 oc import-image code-server:3.12.0 \
   --from=docker.io/codercom/code-server:3.12.0 \
   --scheduled \
@@ -8,8 +9,10 @@ oc import-image code-server:3.12.0 \
 
 # create image stream - custom-code-server
 oc create is custom-code-server
+}
 
-# build configs - base
+# build - base
+build_base(){
 oc new-build \
   --binary \
   --name=custom-code-server-debian-base \
@@ -20,7 +23,13 @@ oc patch bc custom-code-server-debian-base \
   --type='json' \
   --patch='[{"op": "add", "path": "/spec/strategy/dockerStrategy/dockerfilePath", "value": "Dockerfile.debian"}]'
 
-# build configs - patch
+oc start-build \
+  custom-code-server-debian-base \
+  --from-dir container/base
+}
+
+# build - patch
+build_patch(){
 oc new-build \
   --binary \
   --name=custom-code-server-debian-patch \
@@ -32,11 +41,11 @@ oc patch bc custom-code-server-debian-patch \
   --type='json' \
   --patch='[{"op": "add", "path": "/spec/strategy/dockerStrategy/dockerfilePath", "value": "Dockerfile.debian"}]'
 
-# binary / local source builds
-oc start-build \
-  custom-code-server-debian-base \
-  --from-dir container/base
-
 oc start-build \
   custom-code-server-debian-patch \
   --from-dir container/patch
+}
+
+init_image_stream
+build_base
+build_patch
