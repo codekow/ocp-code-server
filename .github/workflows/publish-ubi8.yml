@@ -39,20 +39,26 @@ jobs:
 
       # https://github.com/docker/login-action
       - name: Log into GitHub Container Registry
-        if: github.event_name != 'pull_request'
+        #if: github.event_name != 'pull_request'
         uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
         with:
           registry: ${{ env.GHCR_REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: kludge - build and push
+      - name: kludge - build ubi8
         run: |
           . hacks/local_docker_build.sh
-          
           code_server_build ubi8
+
+      - name: kludge - build codercom
+        run: |
+          . hacks/local_docker_build.sh
           code_server_build codercom
-          
+
+      - name: kludge - push ubi8
+        if: github.event_name != 'pull_request'
+        run: |
           TYPE=ubi8
           docker tag custom-code-server:${TYPE}-base ghcr.io/codekow/code-server:${TYPE}-base
           docker tag custom-code-server:${TYPE} ghcr.io/codekow/code-server:${TYPE}
@@ -62,6 +68,9 @@ jobs:
           docker push ghcr.io/codekow/code-server:${TYPE}
           docker push ghcr.io/codekow/code-server:latest
 
+      - name: kludge - push codercom
+        if: github.event_name != 'pull_request'
+        run: |
           TYPE=codercom
           docker tag custom-code-server:${TYPE}-base ghcr.io/codekow/code-server:${TYPE}-base
           docker tag custom-code-server:${TYPE} ghcr.io/codekow/code-server:${TYPE}
