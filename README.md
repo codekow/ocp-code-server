@@ -36,7 +36,20 @@ TODO
 
 ## How to Build and Deploy on OpenShift
 
-This repo contains a Dockerfile(s) to build this code server image. 
+### Quickstarts
+
+```
+# Docker / Podman
+. hacks/local_docker_build.sh
+code_server_build debian
+code_server_build ubi8
+
+# OpenShift
+hacks/local_ocp_build_ubi8.sh
+hacks/local_ocp_build_debian.sh
+```
+
+This repo contains Dockerfiles to build this code server image. 
 You'll also find an openshift directory which contains a build file and templates to deploy an instance of Code Server on OpenShift.
 
 ### Prerequisits

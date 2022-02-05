@@ -1,4 +1,4 @@
-FROM codercom/code-server:3.12.0
+FROM docker.io/codercom/code-server:3.12.0
 
 ### Atomic/OpenShift Labels - https://github.com/projectatomic/ContainerApplicationGenericLabels
 LABEL name="custom-code-server" \
@@ -21,9 +21,6 @@ ENV REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
 
 # fix: path for local bin
 ENV PATH=$PATH:/home/coder/.local/bin
-
-# setup: basic home files
-COPY skel /etc/skel
 
 # setup: entrypoint and other scripts over 
 COPY bin /usr/local/bin
