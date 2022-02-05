@@ -48,7 +48,7 @@ parameters:
 - name: DOCKERFILE
   description: "Name of the Dockerfile / Containerfile"
   displayName: "Dockerfile Name"
-  value: Dockerfile.debian
+  value: Dockerfile.codercom
 - name: BUILD_REF
   description: "Branch Name to build from (default: main)"
   value: main
@@ -97,7 +97,7 @@ objects:
     labels:
       build: ${APPLICATION_NAME}
       app.kubernetes.io/instance: code-server
-    name: ${APPLICATION_NAME}-debian-base
+    name: ${APPLICATION_NAME}-codercom-base
     annotations:
       app.openshift.io/vcs-ref: ${BUILD_REF}
       app.openshift.io/vcs-uri: ${BUILD_URL}
@@ -109,7 +109,7 @@ objects:
     output:
       to:
         kind: ImageStreamTag
-        name: ${APPLICATION_NAME}:debian-base
+        name: ${APPLICATION_NAME}:codercom-base
     source:
       contextDir: ${CONTEXT_DIR}
       git:

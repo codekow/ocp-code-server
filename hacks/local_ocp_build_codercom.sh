@@ -15,16 +15,16 @@ oc create is custom-code-server
 build_base(){
 oc new-build \
   --binary \
-  --name=custom-code-server-debian-base \
+  --name=custom-code-server-codercom-base \
   --image-stream=code-server:3.12.0 \
-  --to=custom-code-server:debian-base
+  --to=custom-code-server:codercom-base
 
-oc patch bc custom-code-server-debian-base \
+oc patch bc custom-code-server-codercom-base \
   --type='json' \
-  --patch='[{"op": "add", "path": "/spec/strategy/dockerStrategy/dockerfilePath", "value": "Dockerfile.debian"}]'
+  --patch='[{"op": "add", "path": "/spec/strategy/dockerStrategy/dockerfilePath", "value": "Dockerfile.codercom"}]'
 
 oc start-build \
-  custom-code-server-debian-base \
+  custom-code-server-codercom-base \
   --from-dir container/base
 }
 
@@ -32,17 +32,17 @@ oc start-build \
 build_patch(){
 oc new-build \
   --binary \
-  --name=custom-code-server-debian-patch \
-  --image-stream=custom-code-server:debian-base \
-  --to custom-code-server:debian \
+  --name=custom-code-server-codercom-patch \
+  --image-stream=custom-code-server:codercom-base \
+  --to custom-code-server:codercom \
   --allow-missing-imagestream-tags
 
-oc patch bc custom-code-server-debian-patch \
+oc patch bc custom-code-server-codercom-patch \
   --type='json' \
-  --patch='[{"op": "add", "path": "/spec/strategy/dockerStrategy/dockerfilePath", "value": "Dockerfile.debian"}]'
+  --patch='[{"op": "add", "path": "/spec/strategy/dockerStrategy/dockerfilePath", "value": "Dockerfile.codercom"}]'
 
 oc start-build \
-  custom-code-server-debian-patch \
+  custom-code-server-codercom-patch \
   --from-dir container/patch
 }
 

@@ -1,10 +1,18 @@
-FROM custom-code-server:debian-base
+FROM custom-code-server:codercom-base
 
 USER root
 
+# install: skopeo
+# hadolint ignore=DL3008
+RUN echo 'deb http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/codercom_10/ /' > /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list && \
+    curl -sL https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable/codercom_10/Release.key | apt-key add - && \
+    apt-get update && \
+    apt-get -y --no-install-recommends install skopeo && \
+    rm -rf /var/lib/apt/lists/*
+
 # install: updates, utils, and python
 # non interactive install
-ENV DEBIAN_FRONTEND=noninteractive
+ENV codercom_FRONTEND=noninteractive
 
 # hadolint ignore=DL3008
 RUN apt-get update && \
@@ -44,7 +52,7 @@ RUN apt-get update && \
 ## see https://docs.microsoft.com/en-us/sql/connect/odbc/linux-mac/installing-the-microsoft-odbc-driver-for-sql-server
 #ENV DOTNET_CLI_TELEMETRY_OPTOUT=true
 ## hadolint ignore=DL3008
-#RUN curl -sL https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/microsoft-prod.list && \
+#RUN curl -sL https://packages.microsoft.com/config/codercom/10/prod.list > /etc/apt/sources.list.d/microsoft-prod.list && \
 #    apt-get update && \
 #    ACCEPT_EULA=Y apt-get -y install --no-install-recommends dotnet-sdk-3.1 msodbcsql17 mssql-tools unixodbc-dev && \
 #    rm -rf /var/lib/apt/lists/*
@@ -64,14 +72,6 @@ RUN apt-get update && \
 ## RUN curl -Ls -o /tmp/kustomize.tar.gz https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/v3.8.1/kustomize_v3.8.1_linux_amd64.tar.gz && \
 ##    tar -C /opt/app-root/bin -zxf /tmp/kustomize.tar.gz kustomize && \
 ##    rm /tmp/kustomize.tar.gz
-
-# install: skopeo
-# hadolint ignore=DL3008
-RUN echo 'deb http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_10/ /' > /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list && \
-    curl -sL https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable/Debian_10/Release.key | apt-key add - && \
-    apt-get update && \
-    apt-get -y --no-install-recommends install skopeo && \
-    rm -rf /var/lib/apt/lists/*
 
 ## install: gurobi
 #ENV GUROBI_HOME=/opt/gurobi/linux64
