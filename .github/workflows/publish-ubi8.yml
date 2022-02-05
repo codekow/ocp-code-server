@@ -51,11 +51,6 @@ jobs:
           . hacks/local_docker_build.sh
           code_server_build ubi8
 
-      - name: kludge - build codercom
-        run: |
-          . hacks/local_docker_build.sh
-          code_server_build codercom
-
       - name: kludge - push ubi8
         if: github.event_name != 'pull_request'
         run: |
@@ -67,6 +62,11 @@ jobs:
           docker push ghcr.io/codekow/code-server:${TYPE}-base
           docker push ghcr.io/codekow/code-server:${TYPE}
           docker push ghcr.io/codekow/code-server:latest
+
+      - name: kludge - build codercom
+        run: |
+          . hacks/local_docker_build.sh
+          code_server_build codercom
 
       - name: kludge - push codercom
         if: github.event_name != 'pull_request'
