@@ -28,15 +28,14 @@ oc new-build \
   --to custom-code-server:debian \
   --allow-missing-imagestream-tags
 
-oc patch bc custom-code-server-debian-base \
+oc patch bc custom-code-server-debian-patch \
   --type='json' \
   --patch='[{"op": "add", "path": "/spec/strategy/dockerStrategy/dockerfilePath", "value": "Dockerfile.debian"}]'
 
 # binary / local source builds
 oc start-build \
   custom-code-server-debian-base \
-  --from-dir container/base \
-  --follow
+  --from-dir container/base
 
 oc start-build \
   custom-code-server-debian-patch \

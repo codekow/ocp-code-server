@@ -8,6 +8,7 @@ spec:
   runPolicy: SerialLatestOnly
   strategy:
     dockerStrategy:
+      dockerfilePath: Dockerfile.debian
       from:
         kind: ImageStreamTag
         name: custom-code-server:debian-base
@@ -21,7 +22,7 @@ spec:
       type: ImageChange
     - type: ConfigChange
   source:
-    contextDir: debian/patch
+    contextDir: container/patch
     git:
       uri: "https://github.com/codekow/ocp-code-server.git"
       ref: main

@@ -28,15 +28,14 @@ oc new-build \
   --to custom-code-server:ubi8 \
   --allow-missing-imagestream-tags
 
-oc patch bc custom-code-server-ubi8-base \
+oc patch bc custom-code-server-ubi8-patch \
   --type='json' \
   --patch='[{"op": "add", "path": "/spec/strategy/dockerStrategy/dockerfilePath", "value": "Dockerfile.ubi8"}]'
 
 # binary / local source builds
 oc start-build \
   custom-code-server-ubi8-base \
-  --from-dir container/base \
-  --follow
+  --from-dir container/base
 
 oc start-build \
   custom-code-server-ubi8-patch \
