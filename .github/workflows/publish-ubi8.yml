@@ -37,26 +37,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Prepare
-        id: prep
-        run: |
-          #VERSION=${GITHUB_REF#refs/tags/v}
-          VERSION=${{ env.IMAGE_VERSION }}
-          MINOR=${VERSION%.*}
-          MAJOR=${VERSION%%.*}
-          GHCR_IMAGE=${{ env.GHCR_IMAGE }}
-          #TAGS="${DOCKERHUB_IMAGE}:${MAJOR},${DOCKERHUB_IMAGE}:${MINOR}"
-          #TAGS="${TAGS},${DOCKERHUB_IMAGE}:${VERSION},${DOCKERHUB_IMAGE}:latest"
-          TAGS="${TAGS},${GHCR_IMAGE}:${MAJOR},${GHCR_IMAGE}:${MINOR}"
-          TAGS="${TAGS},${GHCR_IMAGE}:${VERSION},${GHCR_IMAGE}:latest"
-          LATEST="${GHCR_IMAGE}:latest"
-          echo ::set-output name=name::${{ env.IMAGE_NAME }}
-          echo ::set-output name=tags::${TAGS}
-          echo ::set-output name=image::${GHCR_IMAGE}
-          echo ::set-output name=version::${VERSION}
-          #echo ::set-output name=dockerhub_image::${DOCKERHUB_IMAGE}
-          echo ::set-output name=ghcr_image::${GHCR_IMAGE}
-
       # https://github.com/docker/login-action
       - name: Log into GitHub Container Registry
         if: github.event_name != 'pull_request'
@@ -66,24 +46,25 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # https://github.com/docker/build-push-action
-      - name: Build and push - ubi8 base
-        uses: docker/build-push-action@a66e35b9cbcf4ad0ea91ffcaf7bbad63ad9e0229
-        with:
-          load: true
-          context: container/base
-          file: container/base/Dockerfile.ubi8
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: custom-code-server:ubi-base,${{ steps.prep.outputs.image }}:ubi-base
-          labels: org.opencontainers.image.version=${{ steps.prep.outputs.version }}
+      - name: kludge - build and push
+        run: |
+          . hacks/local_docker_build.sh
+          
+          code_server_build ubi
+          code_server_build codercom
+          
+          TYPE=ubi8
+          docker tag custom-code-server:${TYPE}-base ghcr.io/codekow/code-server:${TYPE}-base
+          docker tag custom-code-server:${TYPE} ghcr.io/codekow/code-server:${TYPE}
+          docker tag custom-code-server:${TYPE} ghcr.io/codekow/code-server:latest
 
-      # https://github.com/docker/build-push-action
-      - name: Build and push - ubi8 patch
-        uses: docker/build-push-action@a66e35b9cbcf4ad0ea91ffcaf7bbad63ad9e0229
-        with:
-          load: true
-          context: container/base
-          file: container/patch/Dockerfile.ubi8
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.prep.outputs.tags }},${{ steps.prep.outputs.image }}:ubi
-          labels: org.opencontainers.image.version=${{ steps.prep.outputs.version }} 
+          docker push ghcr.io/codekow/code-server:${TYPE}-base
+          docker push ghcr.io/codekow/code-server:${TYPE}
+          docker push ghcr.io/codekow/code-server:latest
+
+          TYPE=codercom
+          docker tag custom-code-server:${TYPE}-base ghcr.io/codekow/code-server:${TYPE}-base
+          docker tag custom-code-server:${TYPE} ghcr.io/codekow/code-server:${TYPE}
+
+          docker push ghcr.io/codekow/code-server:${TYPE}-base
+          docker push ghcr.io/codekow/code-server:${TYPE}
