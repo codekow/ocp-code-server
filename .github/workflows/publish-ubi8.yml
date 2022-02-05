@@ -21,8 +21,8 @@ env:
   GHCR_REGISTRY: ghcr.io
   GHCR_USER: ${{ github.repository_owner }}
   GHCR_IMAGE: ${GHCR_REGISTRY}/${GHCR_USER}/${IMAGE_NAME}
-  #DOCKERHUB_REGISTRY=quay.io
-  #DOCKERHUB_USER: ${{ github.repository_owner }}
+  #QUAY_REGISTRY=quay.io
+  #QUAY_USER: ${{ github.repository_owner }}
 
 
 jobs:
@@ -65,6 +65,12 @@ jobs:
           registry: ${{ env.GHCR_REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+      
+      # https://github.com/docker/setup-buildx-action#customizing
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+        with:
+          driver: docker # defaults to "docker-containerized"
 
       # https://github.com/docker/build-push-action
       - name: Build and push - ubi8 base
