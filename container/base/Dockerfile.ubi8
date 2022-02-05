@@ -8,26 +8,14 @@ LABEL name="custom-code-server" \
       summary="Custom Code Server" \
       description="Custom Code Server base image with a basic collection of tools"
 
+ARG CODE_SERVER_VERSION
+
 # bug: hadolint doesn't see user below
 # hadolint ignore=DL3002
 USER root
 
-# Set shell for RUN commands to ensure consistent execution
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-
-# fix: node CA trust defaults for requests / node
-ENV REQUESTS_CA_BUNDLE=/etc/pki/tls/certs/ca-bundle.crt
-#ENV NODE_EXTRA_CA_CERTS=/etc/pki/tls/certs/ca-bundle.crt
-
-# fix: path for local bin
-ENV PATH=$PATH:/home/coder/.local/bin
-
-WORKDIR /home/coder
-
 # setup: entrypoint and other scripts over 
 COPY bin /usr/local/bin
-
-ARG CODE_SERVER_VERSION
 
 RUN rpm -ivh https://github.com/cdr/code-server/releases/download/v${CODE_SERVER_VERSION:-3.12.0}/code-server-${CODE_SERVER_VERSION:-3.12.0}-amd64.rpm && \
     dnf update -y && \

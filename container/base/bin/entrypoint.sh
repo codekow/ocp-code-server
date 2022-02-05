@@ -45,10 +45,21 @@ if [ ! -w /etc/passwd -a x"${USER_ID}" != x"0" -a x"${USER_ID}" != x"1001" ]; th
 
 fi
 
-# Initalize /home/coder (quickfix)
-cp -an /etc/skel/.{bash,profile,screenrc}* /home/coder
+# fix: node CA trust defaults for requests / node
+if [ -e /etc/pki/tls/certs/ca-bundle.crt ]; then
+    export REQUESTS_CA_BUNDLE=/etc/pki/tls/certs/ca-bundle.crt
+    #export NODE_EXTRA_CA_CERTS=/etc/pki/tls/certs/ca-bundle.crt
+else
+    export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+fi
 
-# setup the npm defaults if the script exists
+# fix: path for local bin
+export PATH=$PATH:/home/coder/.local/bin
+
+# kludge: initalize /home/coder
+cp -an /etc/skel/.{bash,profile}* /home/coder
+
+# fix: setup npm defaults if the script exists
 if [ -f /usr/local/bin/npm-setup.sh ]; then
      /usr/local/bin/npm-setup.sh
 fi
