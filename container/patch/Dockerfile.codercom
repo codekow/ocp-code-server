@@ -1,11 +1,45 @@
-FROM custom-code-server:debian-base
+FROM custom-code-server:codercom-base
 
 USER root
+
+# install: updates, utils, and python
+
+# fix: non interactive install
+ENV DEBIAN_FRONTEND=noninteractive
+
+# hadolint ignore=DL3008
+RUN apt-get update && \
+    apt-get -y upgrade && \
+    apt-get -y install --no-install-recommends \
+    libnss-wrapper \
+    apt-transport-https lsb-release \
+    curl gnupg wget \
+    dnsutils traceroute \
+    git gcc g++ cmake make \
+    python3 python3-pip python3-venv python3-dev \
+    libcurl4-openssl-dev libssl-dev pkg-config \
+    bash-completion rsync zip unzip \
+    krb5-user libkrb5-dev \
+    nano vim jq && \
+    rm -rf /var/lib/apt/lists/* && \
+    chmod g+w /etc/passwd
+
+# kludge: alias python / pip
+RUN ln -s /usr/bin/python3 /usr/local/bin/python && \
+    ln -s /usr/bin/pip3 /usr/local/bin/pip
+
+# install: skopeo
+# hadolint ignore=DL3008
+RUN echo 'deb http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_11/ /' > /etc/apt/sources.list.d/devel:kubic:libcontainers-stable.list && \
+    curl -sL https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_11/Release.key | apt-key add - && \
+    apt-get update && \
+    apt-get -y --no-install-recommends install skopeo && \
+    rm -rf /var/lib/apt/lists/*
 
 # install more tools
 RUN apt-get update && \
     apt-get -y install \
-    pass screen && \
+    tree zsh pass tmux screen && \
     rm -rf /var/lib/apt/lists/*
 
 ## install azure cli tools
@@ -19,13 +53,13 @@ RUN apt-get update && \
 ## see https://docs.microsoft.com/en-us/sql/connect/odbc/linux-mac/installing-the-microsoft-odbc-driver-for-sql-server
 #ENV DOTNET_CLI_TELEMETRY_OPTOUT=true
 ## hadolint ignore=DL3008
-#RUN curl -sL https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/microsoft-prod.list && \
+#RUN curl -sL https://packages.microsoft.com/config/codercom/10/prod.list > /etc/apt/sources.list.d/microsoft-prod.list && \
 #    apt-get update && \
 #    ACCEPT_EULA=Y apt-get -y install --no-install-recommends dotnet-sdk-3.1 msodbcsql17 mssql-tools unixodbc-dev && \
 #    rm -rf /var/lib/apt/lists/*
 #
 ## install: powershell
-## hadolint ignore=DL3008 
+## hadolint ignore=DL3008
 #RUN apt-get update && \
 #    apt-get -y install --no-install-recommends powershell && \
 #    rm -rf /var/lib/apt/lists/*
@@ -39,14 +73,6 @@ RUN apt-get update && \
 ## RUN curl -Ls -o /tmp/kustomize.tar.gz https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/v3.8.1/kustomize_v3.8.1_linux_amd64.tar.gz && \
 ##    tar -C /opt/app-root/bin -zxf /tmp/kustomize.tar.gz kustomize && \
 ##    rm /tmp/kustomize.tar.gz
-
-# install: skopeo
-# hadolint ignore=DL3008
-RUN echo 'deb http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_10/ /' > /etc/apt/sources.list.d/devel:kubic:libcontainers:stable.list && \
-    curl -sL https://download.opensuse.org/repositories/devel:kubic:libcontainers:stable/Debian_10/Release.key | apt-key add - && \
-    apt-get update && \
-    apt-get -y --no-install-recommends install skopeo && \
-    rm -rf /var/lib/apt/lists/*
 
 ## install: gurobi
 #ENV GUROBI_HOME=/opt/gurobi/linux64
@@ -67,7 +93,7 @@ RUN echo 'deb http://download.opensuse.org/repositories/devel:/kubic:/libcontain
 #
 ## install: node v12
 #ARG NODE_HASH="b018082c06206162bb03b97cf7e9463b7e63e7d4fb1024ec9591f071a0ca7a56"
-## hadolint ignore=SC2002,DL3008 
+## hadolint ignore=SC2002,DL3008
 #RUN curl -sL https://deb.nodesource.com/setup_12.x -o setup_12.x.sh && \
 #    sha256sum < setup_12.x.sh && \
 #    [ "$NODE_HASH  -" = "$(sha256sum < setup_12.x.sh)" ] && \

@@ -1,12 +1,32 @@
-FROM custom-code-server:centos-base
+FROM custom-code-server:ubi8-base
 
 USER root
 
-# install more tools
-RUN dnf update && \
-    dnf -y install epel-release && \
+# install: updates, utils, and python
+
+# hadolint ignore=DL3008
+RUN dnf -y update && \
     dnf -y install \
-    pass screen && \
+    nss_wrapper \
+    procps-ng \
+    curl gnupg wget \
+    bind-utils \
+    git gcc gcc-c++ cmake make \
+    python3 python3-pip \
+    pkg-config \
+    bash-completion rsync zip unzip \
+    krb5-workstation \
+    nano vim jq && \
+    dnf clean all && \
+    chmod g+w /etc/passwd
+
+# kludge: alias python / pip
+RUN ln -s /usr/bin/python3 /usr/local/bin/python && \
+    ln -s /usr/bin/pip3 /usr/local/bin/pip
+
+# install: skopeo
+# hadolint ignore=DL3008
+RUN dnf -y install skopeo fuse-overlayfs && \
     rm -rf /var/cache /var/log/dnf* /var/log/yum.*
 
 # see https://docs.microsoft.com/en-us/sql/connect/odbc/linux-mac/installing-the-microsoft-odbc-driver-for-sql-server
@@ -20,7 +40,7 @@ RUN rpm --import https://packages.microsoft.com/keys/microsoft.asc && \
     rm -rf /var/cache /var/log/dnf* /var/log/yum.*
 
 # install: powershell
-# hadolint ignore=DL3008 
+# hadolint ignore=DL3008
 # RUN yum -y install powershell && \
 #    rm -rf /var/cache /var/log/dnf* /var/log/yum.*
 
@@ -33,11 +53,6 @@ RUN rpm --import https://packages.microsoft.com/keys/microsoft.asc && \
 # RUN curl -Ls -o /tmp/kustomize.tar.gz https://github.com/kubernetes-sigs/kustomize/releases/download/kustomize/v3.8.1/kustomize_v3.8.1_linux_amd64.tar.gz && \
 #    tar -C /opt/app-root/bin -zxf /tmp/kustomize.tar.gz kustomize && \
 #    rm /tmp/kustomize.tar.gz
-
-# install: skopeo
-# hadolint ignore=DL3008
-RUN dnf -y install skopeo fuse-overlayfs && \
-    rm -rf /var/cache /var/log/dnf* /var/log/yum.*
 
 # install: gurobi
 ENV GUROBI_HOME=/opt/gurobi/linux64
@@ -56,7 +71,7 @@ RUN curl -s "${GUROBI_URL}" | tar zxf - -C /opt && \
     ln -s /usr/bin/python3.6 /opt/gurobi/linux64/bin/python3.6
 
 # install: node v12
-# hadolint ignore=SC2002,DL3008 
+# hadolint ignore=SC2002,DL3008
 RUN dnf -y module install nodejs:12 && \
     rm -rf /var/cache /var/log/dnf* /var/log/yum.*
 
@@ -65,4 +80,4 @@ RUN dnf -y module install nodejs:12 && \
 RUN npm install -g @angular/cli@11.2.5 && \
     npm completion > /etc/bash_completion.d/npm
 
-USER 1001
+USER coder

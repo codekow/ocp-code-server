@@ -12,10 +12,10 @@ oc process -f ${CODE_SERVER_BUILD} -p BUILD_REF=main | oc apply -f -
 CODE_SERVER_BUILD=../../openshift/build/build-code-server-docker-centos-patch.yml
 oc apply -f ${CODE_SERVER_BUILD}
 
-CODE_SERVER_BUILD=../../openshift/build/build-code-server-base-debian.yml
+CODE_SERVER_BUILD=../../openshift/build/build-code-server-base-codercom.yml
 oc process -f ${CODE_SERVER_BUILD} -p BUILD_REF=main | oc apply -f -
 
-CODE_SERVER_BUILD=../../openshift/build/build-code-server-docker-debian-patch.yml
+CODE_SERVER_BUILD=../../openshift/build/build-code-server-docker-codercom-patch.yml
 oc apply -f ${CODE_SERVER_BUILD}
 
 

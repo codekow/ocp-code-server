@@ -3,28 +3,26 @@ kind: BuildConfig
 metadata:
   labels:
     build: custom-code-server
-  name: custom-code-server-docker-centos-patch
+  name: custom-code-server-docker-codercom-patch
 spec:
   runPolicy: SerialLatestOnly
-  resources:
-    limits:
-      memory: 1Gi
   strategy:
     dockerStrategy:
+      dockerfilePath: Dockerfile.codercom
       from:
         kind: ImageStreamTag
-        name: custom-code-server:centos-base
+        name: custom-code-server:codercom-base
     type: Docker
   output:
     to:
       kind: ImageStreamTag
-      name: 'custom-code-server:centos'
+      name: custom-code-server:codercom
   triggers:
     - imageChange:
       type: ImageChange
     - type: ConfigChange
   source:
-    contextDir: centos/patch
+    contextDir: container/patch
     git:
       uri: "https://github.com/codekow/ocp-code-server.git"
       ref: main

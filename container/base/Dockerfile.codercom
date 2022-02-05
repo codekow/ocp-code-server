@@ -1,57 +1,19 @@
-FROM codercom/code-server:3.12.0
+FROM docker.io/codercom/code-server:4.0.2
 
-### Atomic/OpenShift Labels - https://github.com/projectatomic/ContainerApplicationGenericLabels
+### https://github.com/opencontainers/image-spec/blob/main/annotations.md
 LABEL name="custom-code-server" \
       maintainer="koree@redhat.com" \
-      vendor="Coder" \
-      version="3.12.0" \
+      version="4.0.2" \
       summary="Custom Code Server" \
-      description="Custom Code Server base image with a basic collection of tools"
+      org.opencontainers.image.description.vendor="codercom" \
+      org.opencontainers.image.description="Custom Code Server base image with a basic collection of tools" \
+      org.opencontainers.image.source="https://github.com/codekow/code-server"
+
+ARG CODE_SERVER_VERSION
 
 # bug: hadolint doesn't see user below
 # hadolint ignore=DL3002
 USER root
-
-# Set shell for RUN commands to ensure consistent execution
-SHELL ["/bin/bash", "-o", "pipefail", "-c"]
-
-# fix: node CA trust defaults for requests / node
-ENV REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
-#ENV NODE_EXTRA_CA_CERTS=/etc/ssl/certs/ca-certificates.crt
-
-# fix: path for local bin
-ENV PATH=$PATH:/home/coder/.local/bin
-
-# setup: basic home files
-COPY skel /etc/skel
-
-# setup: entrypoint and other scripts over 
-COPY bin /usr/local/bin
-
-# non interactive install
-ENV DEBIAN_FRONTEND=noninteractive
-
-# install: updates, utils, and python
-# hadolint ignore=DL3008 
-RUN apt-get update && \
-    apt-get -y install --no-install-recommends \
-    libnss-wrapper \
-    apt-transport-https lsb-release \
-    curl gnupg wget \
-    dnsutils traceroute \
-    git gcc g++ cmake make \
-    python3 python3-pip python3-venv python3-dev \
-    libcurl4-openssl-dev libssl-dev pkg-config \
-    bash-completion pass rsync tree zsh zip unzip \
-    krb5-user libkrb5-dev \
-    tmux screen \
-    nano vim jq && \
-    rm -rf /var/lib/apt/lists/* && \
-    chmod g+w /etc/passwd
-
-# fix: alias python / pip 
-RUN ln -s /usr/bin/python3 /usr/local/bin/python && \
-    ln -s /usr/bin/pip3 /usr/local/bin/pip
 
 # install: oc
 ENV OC3_VERSION="3.11.374"
@@ -79,18 +41,21 @@ RUN curl -sL "${OC3_URL}" -o oc.tgz && \
     rm oc.tgz && \
     ln -s /usr/local/bin/oc-wrapper.sh /usr/local/bin/oc
 
-# expose ports for local app / s2i
+# install: entrypoint and other scripts
+COPY bin /usr/local/bin
+
+# expose: ports for local app / s2i
 EXPOSE 1337 8000 8050 8080
 
-WORKDIR /home/coder
 USER coder
 
+WORKDIR /home/coder
 VOLUME /home/coder
 
-HEALTHCHECK --interval=30s \
-            --timeout=60s \
-            --retries=3 \
-  CMD curl -sf http://127.0.0.1:1337 || exit 1
+# HEALTHCHECK --interval=30s \
+#             --timeout=60s \
+#             --retries=3 \
+#   CMD curl -sf http://127.0.0.1:1337 || exit 1
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD ["dumb-init", "fixuid", "-q", "code-server", "--bind-addr", "0.0.0.0:1337", ".", "--disable-telemetry"]
