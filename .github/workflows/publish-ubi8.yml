@@ -21,8 +21,9 @@ env:
   GHCR_REGISTRY: ghcr.io
   GHCR_USER: ${{ github.repository_owner }}
   GHCR_IMAGE: ${GHCR_REGISTRY}/${GHCR_USER}/${IMAGE_NAME}
-  #QUAY_REGISTRY=quay.io
-  #QUAY_USER: ${{ github.repository_owner }}
+  QUAY_REGISTRY: quay.io
+  QUAY_USER: ${{ github.repository_owner }}
+  QUAY_IMAGE: ${QUAY_REGISTRY}/${QUAY_USER}/${IMAGE_NAME}
 
 
 jobs:
@@ -39,12 +40,21 @@ jobs:
 
       # https://github.com/docker/login-action
       - name: Log into GitHub Container Registry
-        #if: github.event_name != 'pull_request'
+        if: github.event_name != 'pull_request'
         uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
         with:
           registry: ${{ env.GHCR_REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
+      # https://github.com/docker/login-action
+      - name: Log into Quay Container Registry
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+        with:
+          registry: ${{ env.QUAY_REGISTRY }}
+          username: ${{ secrets.QUAY_USER }}
+          password: ${{ secrets.QUAY_PASS }}
 
       - name: kludge - build ubi8
         run: |
@@ -55,13 +65,15 @@ jobs:
         if: github.event_name != 'pull_request'
         run: |
           TYPE=ubi8
-          docker tag custom-code-server:${TYPE}-base ghcr.io/codekow/code-server:${TYPE}-base
-          docker tag custom-code-server:${TYPE} ghcr.io/codekow/code-server:${TYPE}
-          docker tag custom-code-server:${TYPE} ghcr.io/codekow/code-server:latest
+          docker tag custom-code-server:${TYPE}-base ${{ env.QUAY_IMAGE }}:${TYPE}-base
+          docker tag custom-code-server:${TYPE} ${{ env.QUAY_IMAGE }}:${TYPE}
+          docker tag custom-code-server:${TYPE} ${{ env.QUAY_IMAGE }}:${{ env.IMAGE_VERSION }}
+          docker tag custom-code-server:${TYPE} ${{ env.QUAY_IMAGE }}:latest
 
-          docker push ghcr.io/codekow/code-server:${TYPE}-base
-          docker push ghcr.io/codekow/code-server:${TYPE}
-          docker push ghcr.io/codekow/code-server:latest
+          docker push ${{ env.QUAY_IMAGE }}:${TYPE}-base
+          docker push ${{ env.QUAY_IMAGE }}:${TYPE}
+          docker push ${{ env.QUAY_IMAGE }}:${{ env.IMAGE_VERSION }}
+          docker push ${{ env.QUAY_IMAGE }}:latest
 
       - name: kludge - build codercom
         run: |
@@ -72,8 +84,8 @@ jobs:
         if: github.event_name != 'pull_request'
         run: |
           TYPE=codercom
-          docker tag custom-code-server:${TYPE}-base ghcr.io/codekow/code-server:${TYPE}-base
-          docker tag custom-code-server:${TYPE} ghcr.io/codekow/code-server:${TYPE}
+          docker tag custom-code-server:${TYPE}-base ${{ env.QUAY_IMAGE }}:${TYPE}-base
+          docker tag custom-code-server:${TYPE} ${{ env.QUAY_IMAGE }}:${TYPE}
 
-          docker push ghcr.io/codekow/code-server:${TYPE}-base
-          docker push ghcr.io/codekow/code-server:${TYPE}
+          docker push ${{ env.QUAY_IMAGE }}:${TYPE}-base
+          docker push ${{ env.QUAY_IMAGE }}:${TYPE}
