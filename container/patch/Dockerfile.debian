@@ -25,7 +25,7 @@ RUN apt-get update && \
 #    rm -rf /var/lib/apt/lists/*
 #
 ## install: powershell
-## hadolint ignore=DL3008 
+## hadolint ignore=DL3008
 #RUN apt-get update && \
 #    apt-get -y install --no-install-recommends powershell && \
 #    rm -rf /var/lib/apt/lists/*
@@ -67,7 +67,7 @@ RUN echo 'deb http://download.opensuse.org/repositories/devel:/kubic:/libcontain
 #
 ## install: node v12
 #ARG NODE_HASH="b018082c06206162bb03b97cf7e9463b7e63e7d4fb1024ec9591f071a0ca7a56"
-## hadolint ignore=SC2002,DL3008 
+## hadolint ignore=SC2002,DL3008
 #RUN curl -sL https://deb.nodesource.com/setup_12.x -o setup_12.x.sh && \
 #    sha256sum < setup_12.x.sh && \
 #    [ "$NODE_HASH  -" = "$(sha256sum < setup_12.x.sh)" ] && \

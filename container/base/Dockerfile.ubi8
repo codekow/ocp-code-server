@@ -14,27 +14,13 @@ ARG CODE_SERVER_VERSION
 # hadolint ignore=DL3002
 USER root
 
-# setup: entrypoint and other scripts over 
-COPY bin /usr/local/bin
+# setup: coder user
+RUN useradd coder -u 1000 -g 0 && \
+    chmod 700 /home/coder && \
+    chown -R 1000:0 /home/coder
 
-RUN rpm -ivh https://github.com/cdr/code-server/releases/download/v${CODE_SERVER_VERSION:-3.12.0}/code-server-${CODE_SERVER_VERSION:-3.12.0}-amd64.rpm && \
-    dnf update -y && \
-    dnf install -y \
-    nss_wrapper \
-    curl gnupg wget \
-    bind-utils \
-    git gcc gcc-c++ cmake make \
-    python3 python3-pip \
-    pkg-config \
-    bash-completion rsync zip unzip \
-    krb5-workstation \
-    nano vim jq && \
-    dnf clean all && \
-    chmod g+w /etc/passwd
-
-# fix: alias python / pip 
-RUN ln -s /usr/bin/python3 /usr/local/bin/python && \
-    ln -s /usr/bin/pip3 /usr/local/bin/pip
+# install: code-server
+RUN rpm -ivh https://github.com/cdr/code-server/releases/download/v${CODE_SERVER_VERSION:-3.12.0}/code-server-${CODE_SERVER_VERSION:-3.12.0}-amd64.rpm
 
 # install: oc
 ENV OC3_VERSION="3.11.374"
@@ -62,13 +48,43 @@ RUN curl -sL "${OC3_URL}" -o oc.tgz && \
     rm oc.tgz && \
     ln -s /usr/local/bin/oc-wrapper.sh /usr/local/bin/oc
 
+# install: updates, utils, and python
+# hadolint ignore=DL3008
+RUN dnf update -y && \
+    dnf install -y \
+    nss_wrapper \
+    procps-ng \
+    curl gnupg wget \
+    bind-utils \
+    git gcc gcc-c++ cmake make \
+    python3 python3-pip \
+    pkg-config \
+    bash-completion rsync zip unzip \
+    krb5-workstation \
+    nano vim jq && \
+    dnf clean all && \
+    chmod g+w /etc/passwd
+
+# fix: alias python / pip
+RUN ln -s /usr/bin/python3 /usr/local/bin/python && \
+    ln -s /usr/bin/pip3 /usr/local/bin/pip
+
+# setup: entrypoint and other scripts over
+COPY bin /usr/local/bin
+
 # expose ports for local app / s2i
 EXPOSE 1337 8000 8050 8080
 
-WORKDIR /home/coder
 USER 1001
 
+WORKDIR /home/coder
 VOLUME /home/coder
+
+HEALTHCHECK --interval=30s \
+            --timeout=60s \
+            --retries=3 \
+  CMD curl -sf http://127.0.0.1:1337 || exit 1
+
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD ["code-server", "--bind-addr", "0.0.0.0:1337", ".", "--disable-telemetry"]

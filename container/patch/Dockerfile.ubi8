@@ -17,7 +17,7 @@ RUN rpm --import https://packages.microsoft.com/keys/microsoft.asc && \
     rm -rf /var/cache /var/log/dnf* /var/log/yum.*
 
 # install: powershell
-# hadolint ignore=DL3008 
+# hadolint ignore=DL3008
 # RUN yum -y install powershell && \
 #    rm -rf /var/cache /var/log/dnf* /var/log/yum.*
 
@@ -53,7 +53,7 @@ RUN curl -s "${GUROBI_URL}" | tar zxf - -C /opt && \
     ln -s /usr/bin/python3.6 /opt/gurobi/linux64/bin/python3.6
 
 # install: node v12
-# hadolint ignore=SC2002,DL3008 
+# hadolint ignore=SC2002,DL3008
 RUN dnf -y module install nodejs:12 && \
     rm -rf /var/cache /var/log/dnf* /var/log/yum.*
 
