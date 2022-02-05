@@ -67,17 +67,17 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       # https://github.com/docker/build-push-action
-      - name: Build and push - ${{ env.IMAGE_NAME }} base
+      - name: Build and push - ubi8 base
         uses: docker/build-push-action@a66e35b9cbcf4ad0ea91ffcaf7bbad63ad9e0229
         with:
           context: container/base
           file: container/base/Dockerfile.ubi8
           push: ${{ github.event_name != 'pull_request' }}
-          tags: custom-code-server:ubi-base
+          tags: custom-code-server:ubi-base,${{ steps.prep.outputs.image }}:ubi-base
           labels: org.opencontainers.image.version=${{ steps.prep.outputs.version }}
 
       # https://github.com/docker/build-push-action
-      - name: Build and push - ${{ env.IMAGE_NAME }} patch
+      - name: Build and push - ubi8 patch
         uses: docker/build-push-action@a66e35b9cbcf4ad0ea91ffcaf7bbad63ad9e0229
         with:
           context: container/base
