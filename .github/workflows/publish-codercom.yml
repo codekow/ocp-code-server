@@ -1,4 +1,4 @@
-name: publish-ubi8
+name: publish-codercom
 
 # This workflow uses actions that are not certified by GitHub.
 # They are provided by a third-party and are governed by
@@ -9,12 +9,10 @@ on:
   schedule:
     - cron: '16 1 * * *'
   push:
-    branches: [ main ]
+    #branches: [ main ]
     # Publish semver tags as releases.
     tags: [ 'v*.*.*' ]
-  pull_request:
-    branches: [ main ]
-
+  
 env:
   IMAGE_NAME: code-server
   IMAGE_VERSION: 4.0.2
@@ -56,21 +54,17 @@ jobs:
           username: ${{ secrets.QUAY_USER }}
           password: ${{ secrets.QUAY_PASS }}
 
-      - name: kludge - build ubi8
+      - name: kludge - build codercom
         run: |
           . hacks/local_docker_build.sh
-          code_server_build ubi8
+          code_server_build codercom
 
-      - name: kludge - push ubi8
+      - name: kludge - push codercom
         if: github.event_name != 'pull_request'
         run: |
-          TYPE=ubi8
+          TYPE=codercom
           docker tag custom-code-server:${TYPE}-base ${{ env.QUAY_IMAGE }}:${TYPE}-base
           docker tag custom-code-server:${TYPE} ${{ env.QUAY_IMAGE }}:${TYPE}
-          docker tag custom-code-server:${TYPE} ${{ env.QUAY_IMAGE }}:${{ env.IMAGE_VERSION }}
-          docker tag custom-code-server:${TYPE} ${{ env.QUAY_IMAGE }}:latest
 
           docker push ${{ env.QUAY_IMAGE }}:${TYPE}-base
           docker push ${{ env.QUAY_IMAGE }}:${TYPE}
-          docker push ${{ env.QUAY_IMAGE }}:${{ env.IMAGE_VERSION }}
-          docker push ${{ env.QUAY_IMAGE }}:latest
