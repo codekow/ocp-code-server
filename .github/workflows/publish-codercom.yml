@@ -36,7 +36,7 @@ jobs:
       # https://github.com/docker/login-action
       - name: Log into GitHub Container Registry
         if: github.event_name != 'pull_request'
-        uses: docker/login-action@42d299face0c5c43a0487c477f595ac9cf22f1a7
+        uses: docker/login-action@6af3c118c8376c675363897acf1757f7a9be6583
         with:
           registry: ${{ env.GHCR_REGISTRY }}
           username: ${{ github.actor }}
@@ -45,7 +45,7 @@ jobs:
       # https://github.com/docker/login-action
       - name: Log into Quay Container Registry
         if: github.event_name != 'pull_request'
-        uses: docker/login-action@42d299face0c5c43a0487c477f595ac9cf22f1a7
+        uses: docker/login-action@6af3c118c8376c675363897acf1757f7a9be6583
         with:
           registry: ${{ env.QUAY_REGISTRY }}
           username: ${{ secrets.QUAY_USER }}
