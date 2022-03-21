@@ -1,9 +1,9 @@
-FROM docker.io/codercom/code-server:4.0.2
+FROM docker.io/codercom/code-server:4.1.0
 
 ### https://github.com/opencontainers/image-spec/blob/main/annotations.md
 LABEL name="custom-code-server" \
       maintainer="koree@redhat.com" \
-      version="4.0.2" \
+      version="4.1.0" \
       summary="Custom Code Server" \
       org.opencontainers.image.description.vendor="codercom" \
       org.opencontainers.image.description="Custom Code Server base image with a basic collection of tools" \

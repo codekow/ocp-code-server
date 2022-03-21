@@ -14,7 +14,7 @@ on:
 
 env:
   IMAGE_NAME: code-server
-  IMAGE_VERSION: 4.0.2
+  IMAGE_VERSION: 4.1.0
   GHCR_REGISTRY: ghcr.io
   GHCR_USER: ${{ github.repository_owner }}
   GHCR_IMAGE: ${GHCR_REGISTRY}/${GHCR_USER}/${IMAGE_NAME}
