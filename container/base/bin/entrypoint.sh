@@ -65,12 +65,13 @@ if [ -f /usr/local/bin/npm-setup.sh ]; then
 fi
 
 # kludge: opinionated defaults
-if [ ! -e ${HOME}/.local/share/code-server/User/settings.json ]; then
-echo "{
-    "workbench.colorTheme": "Abyss",
-    "terminal.integrated.defaultProfile.linux": "bash",
-    "telemetry.enableTelemetry": false
-}" > ${HOME}/.local/share/code-server/User/settings.json
-fi
+#if [ ! -e ${HOME}/.local/share/code-server/User/settings.json ]; then
+#mkdir -p ${HOME}/.local/share/code-server/User
+#echo "{
+#    "workbench.colorTheme": "Abyss",
+#    "terminal.integrated.defaultProfile.linux": "bash",
+#    "telemetry.enableTelemetry": false
+#}" > ${HOME}/.local/share/code-server/User/settings.json
+#fi
 
 exec "$@"
