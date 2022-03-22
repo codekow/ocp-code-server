@@ -28,14 +28,6 @@ RUN apt-get update && \
 RUN ln -s /usr/bin/python3 /usr/local/bin/python && \
     ln -s /usr/bin/pip3 /usr/local/bin/pip
 
-# install: skopeo
-# hadolint ignore=DL3008
-RUN echo 'deb http://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_11/ /' > /etc/apt/sources.list.d/devel:kubic:libcontainers-stable.list && \
-    curl -sL https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/stable/Debian_11/Release.key | apt-key add - && \
-    apt-get update && \
-    apt-get -y --no-install-recommends install skopeo && \
-    rm -rf /var/lib/apt/lists/*
-
 # install more tools
 RUN apt-get update && \
     apt-get -y install \

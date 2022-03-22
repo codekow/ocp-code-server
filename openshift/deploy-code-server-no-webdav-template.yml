@@ -2,14 +2,16 @@
 kind: Template
 apiVersion: template.openshift.io/v1
 labels:
-  template: custom-code-server-no-webdav
+  template: custom-code-server
   app.kubernetes.io/part-of: code-server
   app.kubernetes.io/component: ide
 metadata:
   name: code-server-no-webdav
+  labels:
+    template: custom-code-server
   annotations:
     openshift.io/display-name: VS Code Server (No WebDav)
-    description: TDeploy VS Code Server in OpenShift, no WebDav sidecar
+    description: Deploy VS Code Server in OpenShift, no WebDav sidecar
     iconClass: icon-python
     tags: python,vscode
     openshift.io/documentation-url: "https://github.com/codekow/ocp-code-server" 
@@ -42,7 +44,7 @@ parameters:
   description: Password for Code Server
 - name: CODE_SERVER_IMAGE
   description: The base image for code-server
-  value: openshift/custom-code-server:latest	
+  value: quay.io/codekow/code-server:ubi8
   required: true
 objects:
 - kind: ImageStream
