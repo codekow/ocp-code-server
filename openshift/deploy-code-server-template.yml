@@ -52,11 +52,11 @@ parameters:
   description: Password for Code Server
 - name: CODE_SERVER_IMAGE
   description: The base image for code-server
-  value: openshift/custom-code-server:latest	
+  value: quay.io/codekow/code-server:latest
   required: true
 - name: WEBDAV_NODE_IMAGE
   description: The base image for WebDav
-  value: openshift/webdav-node:latest
+  value: quay.io/codekow/webdav:latest
   required: true
 objects:
 - kind: ImageStream

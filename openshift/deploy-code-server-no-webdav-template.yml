@@ -42,7 +42,7 @@ parameters:
   description: Password for Code Server
 - name: CODE_SERVER_IMAGE
   description: The base image for code-server
-  value: openshift/custom-code-server:latest	
+  value: quay.io/codekow/code-server:latest
   required: true
 objects:
 - kind: ImageStream

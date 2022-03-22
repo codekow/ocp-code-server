@@ -1,13 +1,15 @@
 FROM registry.access.redhat.com/ubi8/ubi:8.5
 
-### https://github.com/opencontainers/image-spec/blob/main/annotations.md
+# https://github.com/opencontainers/image-spec/blob/main/annotations.md
 LABEL name="custom-code-server" \
       maintainer="koree@redhat.com" \
       version="4.1.0" \
       summary="Custom Code Server" \
       org.opencontainers.image.description.vendor="codercom" \
       org.opencontainers.image.description="Custom Code Server base image with a basic collection of tools" \
-      org.opencontainers.image.source="https://github.com/codekow/code-server"
+      org.opencontainers.image.source="https://github.com/codekow/code-server" \
+      description="Custom Code Server base image with a basic collection of tools" \
+      io.k8s.description="Custom Code Server base image with a basic collection of tools"
 
 ARG CODE_SERVER_VERSION
 
