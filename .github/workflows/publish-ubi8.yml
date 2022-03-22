@@ -9,6 +9,7 @@ on:
   push:
     # Publish semver tags as releases.
     tags: [ 'v*.*.*' ]
+    branches: [ main ]
   pull_request:
     branches: [ main ]
 
@@ -37,7 +38,7 @@ jobs:
 
       # https://github.com/docker/login-action
       - name: Log into GitHub Container Registry
-        if: github.event_name != 'pull_request'
+        #if: github.event_name != 'pull_request'
         uses: docker/login-action@dd4fa0671be5250ee6f50aedf4cb05514abda2c7
         with:
           registry: ${{ env.GHCR_REGISTRY }}
@@ -46,7 +47,7 @@ jobs:
 
       # https://github.com/docker/login-action
       - name: Log into Quay Container Registry
-        if: github.event_name != 'pull_request'
+        #if: github.event_name != 'pull_request'
         uses: docker/login-action@dd4fa0671be5250ee6f50aedf4cb05514abda2c7
         with:
           registry: ${{ env.QUAY_REGISTRY }}
@@ -59,7 +60,7 @@ jobs:
           code_server_build ubi8
 
       - name: kludge - push ubi8
-        if: github.event_name != 'pull_request'
+        #if: github.event_name != 'pull_request'
         run: |
           TYPE=ubi8
           docker tag custom-code-server:${TYPE}-base ${{ env.QUAY_IMAGE }}:${TYPE}-base
