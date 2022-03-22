@@ -7,6 +7,8 @@ labels:
   app.kubernetes.io/component: ide
 metadata:
   name: code-server
+  labels:
+    template: custom-code-server
   annotations:
     openshift.io/display-name: VS Code Server
     description: Deploy VS Code Server in OpenShift
@@ -52,7 +54,7 @@ parameters:
   description: Password for Code Server
 - name: CODE_SERVER_IMAGE
   description: The base image for code-server
-  value: quay.io/codekow/code-server:latest
+  value: quay.io/codekow/code-server:ubi8
   required: true
 - name: WEBDAV_NODE_IMAGE
   description: The base image for WebDav
@@ -128,7 +130,7 @@ objects:
       dockerStrategy:
         from:
           kind: ImageStreamTag
-          name: '${APPLICATION_NAME}:codercom'
+          name: '${APPLICATION_NAME}:base'
       type: Docker
     successfulBuildsHistoryLimit: 5
     triggers:
