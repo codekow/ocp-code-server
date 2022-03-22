@@ -42,6 +42,7 @@ RUN apt-get update && \
     rm -rf /root/.gnupg && \
     apt-get update && \
     apt-get -y --no-install-recommends install skopeo && \
+    apt-get -y upgrade && \
     rm -rf /var/lib/apt/lists/*
 
 # install: entrypoint and other scripts
