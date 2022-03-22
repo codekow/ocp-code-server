@@ -26,22 +26,11 @@ RUN useradd coder -u 1000 -g 0 && \
 RUN rpm -ivh https://github.com/cdr/code-server/releases/download/v${CODE_SERVER_VERSION:-4.1.0}/code-server-${CODE_SERVER_VERSION:-4.1.0}-amd64.rpm
 
 # install: oc
-ENV OC3_VERSION="3.11.374"
-ARG OC3_HASH="1fb49e5548c649d8bab15ac4dca7a77225747b1957c2082f8e47ccbb9120356e"
-ARG OC3_URL="https://mirror.openshift.com/pub/openshift-v3/clients/${OC3_VERSION}/linux/oc.tar.gz"
-
 ENV OC4_VERSION="4.8.10"
 ARG OC4_HASH="9d727adc9438bb7431344a7349ee88fbf05b5dbb856e678013a15c084b72cc9d"
 ARG OC4_URL="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${OC4_VERSION}/openshift-client-linux.tar.gz"
 
-RUN curl -sL "${OC3_URL}" -o oc.tgz && \
-    sha256sum < oc.tgz && \
-    [ "$OC3_HASH  -" = "$(sha256sum < oc.tgz)" ] && \
-    echo "OC3_HASH: PASSED" && \
-    tar -C /usr/local/bin -zxf oc.tgz oc && \
-    mv /usr/local/bin/oc /usr/local/bin/oc-${OC3_VERSION%.*} && \
-    /usr/local/bin/oc-${OC3_VERSION%.*} completion bash > /etc/bash_completion.d/oc-${OC3_VERSION%.*} && \
-    curl -sL "${OC4_URL}" -o oc.tgz && \
+RUN curl -sL "${OC4_URL}" -o oc.tgz && \
     sha256sum < oc.tgz && \
     [ "$OC4_HASH  -" = "$(sha256sum < oc.tgz)" ] && \
     echo "OC4_HASH: PASSED" && \
@@ -50,6 +39,11 @@ RUN curl -sL "${OC3_URL}" -o oc.tgz && \
     /usr/local/bin/oc-${OC4_VERSION%.*} completion bash > /etc/bash_completion.d/oc-${OC4_VERSION%.*} && \
     rm oc.tgz && \
     ln -s /usr/local/bin/oc-wrapper.sh /usr/local/bin/oc
+
+# install: skopeo
+# hadolint ignore=DL3008
+RUN dnf -y install skopeo fuse-overlayfs && \
+    rm -rf /var/cache /var/log/dnf* /var/log/yum.*
 
 # install: entrypoint and other scripts
 COPY bin /usr/local/bin

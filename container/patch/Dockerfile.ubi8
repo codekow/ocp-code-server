@@ -24,11 +24,6 @@ RUN dnf -y update && \
 RUN ln -s /usr/bin/python3 /usr/local/bin/python && \
     ln -s /usr/bin/pip3 /usr/local/bin/pip
 
-# install: skopeo
-# hadolint ignore=DL3008
-RUN dnf -y install skopeo fuse-overlayfs && \
-    rm -rf /var/cache /var/log/dnf* /var/log/yum.*
-
 # see https://docs.microsoft.com/en-us/sql/connect/odbc/linux-mac/installing-the-microsoft-odbc-driver-for-sql-server
 ENV DOTNET_CLI_TELEMETRY_OPTOUT=true
 # hadolint ignore=DL3008
