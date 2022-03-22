@@ -2,14 +2,14 @@
 kind: Template
 apiVersion: template.openshift.io/v1
 labels:
-  template: custom-code-server
+  template: custom-code-server-build-codercom
   app.kubernetes.io/part-of: code-server
   app.kubernetes.io/component: ide
 metadata:
-  name: custom-code-server
+  name: custom-code-server-build-codercom
   annotations:
     openshift.io/display-name: VS Code Server
-    description: Deploy VS Code Server with persistent volume
+    description: Setup a build config for codercom custom code server
     iconClass: icon-python
     tags: python,vscode
     openshift.io/documentation-url: "https://github.com/codekow/ocp-code-server" 
@@ -66,7 +66,7 @@ objects:
   apiVersion: image.openshift.io/v1
   metadata:
     labels:
-      build: ${APPLICATION_NAME}
+      build: ${APPLICATION_NAME}-codercom
     name: ${APPLICATION_NAME}
   spec:
     lookupPolicy:
@@ -89,7 +89,7 @@ objects:
         name: ${DOCKER_IMAGE_TAG}
       - from:
           kind: ImageStreamTag
-          name: ${DOCKER_IMAGE_TAG}
+          name: code-server:${DOCKER_IMAGE_TAG}
         name: "latest"
 - kind: BuildConfig
   apiVersion: build.openshift.io/v1
