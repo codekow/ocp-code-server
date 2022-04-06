@@ -86,9 +86,9 @@ objects:
         USER root
 
         # install your own customizations here
-        # RUN apt-get update && \
-        #     apt-get -y install --no-install-recommends awesome-tool && \
-        #     rm -rf /var/lib/apt/lists/*
+        # RUN dnf update -y && \
+        #     dnf -y install awesome-tool && \
+        #     dnf clean all
 
         USER 1001
 
