@@ -64,7 +64,7 @@ if [ -f /usr/local/bin/npm-setup.sh ]; then
 fi
 
 # kludge: opinionated defaults
-# the below is a requirement for UBI based images (and wont break antything Debian based)
+# the below is a requirement for UBI based images (and wont break anything Debian based)
 if [ ! -e ${HOME}/.local/share/code-server/User/settings.json ]; then
 mkdir -p ${HOME}/.local/share/code-server/User
 echo "{
