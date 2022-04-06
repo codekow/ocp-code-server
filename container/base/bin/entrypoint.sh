@@ -69,7 +69,7 @@ if [ ! -e ${HOME}/.local/share/code-server/User/settings.json ]; then
 mkdir -p ${HOME}/.local/share/code-server/User
 echo "{
     "workbench.colorTheme": "Abyss",
-    "terminal.integrated.defaultProfile.linux": "/bin/bash",
+    "terminal.integrated.defaultProfile.linux": "bash",
     "terminal.integrated.shell.linux": "/bin/bash",
     "telemetry.enableTelemetry": false
 }" > ${HOME}/.local/share/code-server/User/settings.json
