@@ -23,7 +23,7 @@ fi
 if [ -e /usr/lib/x86_64-linux-gnu/libnss_wrapper.so ]; then
     LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libnss_wrapper.so
 else
-    LD_PRELOAD=/usr/lib/libnss_wrapper.so
+    LD_PRELOAD=/usr/lib64/libnss_wrapper.so
 fi
 
 NSS_WRAPPER_PASSWD=/tmp/passwd.nss_wrapper
@@ -42,7 +42,6 @@ if [ ! -w /etc/passwd -a x"${USER_ID}" != x"0" -a x"${USER_ID}" != x"1001" ]; th
 
     export NSS_WRAPPER_PASSWD
     export LD_PRELOAD
-
 fi
 
 # fix: node CA trust defaults for requests / node
@@ -65,13 +64,15 @@ if [ -f /usr/local/bin/npm-setup.sh ]; then
 fi
 
 # kludge: opinionated defaults
-#if [ ! -e ${HOME}/.local/share/code-server/User/settings.json ]; then
-#mkdir -p ${HOME}/.local/share/code-server/User
-#echo "{
-#    "workbench.colorTheme": "Abyss",
-#    "terminal.integrated.defaultProfile.linux": "bash",
-#    "telemetry.enableTelemetry": false
-#}" > ${HOME}/.local/share/code-server/User/settings.json
-#fi
+# the below is a requirement for UBI based images (and wont break antything Debian based)
+if [ ! -e ${HOME}/.local/share/code-server/User/settings.json ]; then
+mkdir -p ${HOME}/.local/share/code-server/User
+echo "{
+    "workbench.colorTheme": "Abyss",
+    "terminal.integrated.defaultProfile.linux": "/bin/bash",
+    "terminal.integrated.shell.linux": "/bin/bash",
+    "telemetry.enableTelemetry": false
+}" > ${HOME}/.local/share/code-server/User/settings.json
+fi
 
 exec "$@"

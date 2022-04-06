@@ -18,9 +18,9 @@ ARG CODE_SERVER_VERSION
 USER root
 
 # setup: coder user
-RUN useradd coder -u 1000 -g 0 && \
-    chmod 700 /home/coder && \
-    chown -R 1000:0 /home/coder
+RUN useradd coder -u 1001 -g 0 && \
+    chgrp -R 0 /home/coder && \
+    chmod -R g=u /home/coder
 
 # install: code-server
 RUN rpm -ivh https://github.com/cdr/code-server/releases/download/v${CODE_SERVER_VERSION:-4.2.0}/code-server-${CODE_SERVER_VERSION:-4.2.0}-amd64.rpm
@@ -42,7 +42,8 @@ RUN curl -sL "${OC4_URL}" -o oc.tgz && \
 
 # install: skopeo
 # hadolint ignore=DL3008
-RUN dnf -y install skopeo && \
+RUN dnf -y install skopeo uid_wrapper nss_wrapper && \
+    dnf clean all && \
     rm -rf /var/cache /var/log/dnf* /var/log/yum.*
 
 # install: entrypoint and other scripts
