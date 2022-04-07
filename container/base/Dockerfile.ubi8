@@ -18,7 +18,7 @@ ARG CODE_SERVER_VERSION
 USER root
 
 # setup: coder user
-RUN useradd coder -u 1001 -g 0 && \
+RUN mkdir /home/coder && \
     chgrp -R 0 /home/coder && \
     chmod -R g=u /home/coder
 
@@ -42,7 +42,7 @@ RUN curl -sL "${OC4_URL}" -o oc.tgz && \
 
 # install: skopeo
 # hadolint ignore=DL3008
-RUN dnf -y install skopeo nss_wrapper && \
+RUN dnf -y install skopeo && \
     dnf clean all && \
     rm -rf /var/cache /var/log/dnf* /var/log/yum.*
 
@@ -53,6 +53,8 @@ COPY bin /usr/local/bin
 EXPOSE 1337 8000 8050 8080
 
 USER coder
+
+ENV HOME=/home/coder
 
 WORKDIR /home/coder
 VOLUME /home/coder
