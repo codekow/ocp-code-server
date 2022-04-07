@@ -35,12 +35,12 @@ fi
 # kludge: opinionated defaults
 if [ ! -e ${HOME}/.local/share/code-server/User/settings.json ]; then
 mkdir -p ${HOME}/.local/share/code-server/User
-echo "{
+echo '{
     "workbench.colorTheme": "Abyss",
     "terminal.integrated.defaultProfile.linux": "bash",
     "terminal.integrated.shell.linux": "/bin/bash",
     "telemetry.enableTelemetry": false
-}" > ${HOME}/.local/share/code-server/User/settings.json
+}' > ${HOME}/.local/share/code-server/User/settings.json
 fi
 
 exec "$@"

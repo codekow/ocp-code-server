@@ -54,18 +54,6 @@ objects:
       app: "${APPLICATION_NAME}"
       app.kubernetes.io/name: "${APPLICATION_NAME}"
     name: "${APPLICATION_NAME}"
-  spec:
-    lookupPolicy:
-      local: true
-    tags:
-    - name: base
-      from:
-        kind: DockerImage
-        name: ${CODE_SERVER_IMAGE}
-      importPolicy:
-        scheduled: true
-      referencePolicy:
-        type: Source
 - apiVersion: build.openshift.io/v1
   kind: BuildConfig
   metadata:
@@ -96,16 +84,11 @@ objects:
     strategy:
       dockerStrategy:
         from:
-          kind: ImageStreamTag
-          name: '${APPLICATION_NAME}:base'
+          kind: DockerImage
+          name: '${CODE_SERVER_IMAGE}'
       type: Docker
     successfulBuildsHistoryLimit: 5
     triggers:
-      - type: ImageChange
-        imageChange:
-          from:
-            kind: ImageStreamTag
-            name: '${APPLICATION_NAME}:base'
       - type: ConfigChange
 - kind: Secret
   apiVersion: v1
@@ -162,7 +145,7 @@ objects:
       spec:
         containers:
           - name: custom-code-server
-            image: ${APPLICATION_NAME}:latest
+            image: ' '
             imagePullPolicy: Always
             env:
               - name: PASSWORD
