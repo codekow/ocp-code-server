@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION_TAG=4.2.0
+VERSION_TAG=4.4.0
 
 # import container image streams
 init_image_stream(){
