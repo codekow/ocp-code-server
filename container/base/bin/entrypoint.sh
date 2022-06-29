@@ -25,7 +25,7 @@ fi
 
 #fix: uid issues
 if ! whoami &> /dev/null; then
-    echo "fix: uid issues"
+    echo "fix: uid"
     NSS_WRAPPER_PASSWD=/tmp/passwd.nss_wrapper
 
     grep -v -e ^"${USER_NAME:-coder}" -e ^"${USER_ID:-coder}" /etc/passwd > $NSS_WRAPPER_PASSWD
@@ -34,7 +34,7 @@ if ! whoami &> /dev/null; then
     if [ -w /etc/passwd ]; then
         cat $NSS_WRAPPER_PASSWD > /etc/passwd
     else
-        echo "fix: nss_wrapper config"
+        echo "fix: nss_wrapper"
         if [ -e /usr/lib/x86_64-linux-gnu/libnss_wrapper.so ]; then
             LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libnss_wrapper.so
         else
