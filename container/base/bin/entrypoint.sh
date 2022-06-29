@@ -5,11 +5,13 @@ set -e
 # Set current user in nss_wrapper
 # Generate passwd file based on current uid and use NSS_WRAPPER to set it
 # This is required for ssh to work.  
+USER_NAME=coder
 USER_ID=$(id -u)
 GROUP_ID=$(id -g)
 HOME=/home/coder
 
-# Correct issue for some storage classes
+# fix: ssh perms
+# address issue for some storage classes
 # where sticky bit in /coder/home modifies
 # .ssh folder on pod restarts
 if [ -f ${HOME}/.ssh/id_rsa ]; then
@@ -21,28 +23,30 @@ if [ -f ${HOME}/.ssh/id_rsa ]; then
     fi
 fi
 
-if [ -e /usr/lib/x86_64-linux-gnu/libnss_wrapper.so ]; then
-    LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libnss_wrapper.so
-else
-    LD_PRELOAD=/usr/lib64/libnss_wrapper.so
-fi
-
-NSS_WRAPPER_PASSWD=/tmp/passwd.nss_wrapper
-
+#fix: uid issues
 if ! whoami &> /dev/null; then
-    if [ -w /etc/passwd ]; then
-        grep -v -e ^${USER_NAME:-coder} -e ^"${USER_ID:-coder}" /etc/passwd > $NSS_WRAPPER_PASSWD
-        echo "${USER_NAME:-coder}:x:${USER_ID}:0:${USER_NAME:-coder} user:${HOME}:/bin/bash" >> $NSS_WRAPPER_PASSWD
-        cat $NSS_WRAPPER_PASSWD > /etc/passwd
-    fi
-fi
+    echo "fix: uid issues"
+    NSS_WRAPPER_PASSWD=/tmp/passwd.nss_wrapper
 
-if [ ! -w /etc/passwd -a x"${USER_ID}" != x"0" -a x"${USER_ID}" != x"1001" ]; then
-    grep -v -e ^${USER_NAME:-coder} -e ^"${USER_ID:-coder}" /etc/passwd > $NSS_WRAPPER_PASSWD
+    grep -v -e ^"${USER_NAME:-coder}" -e ^"${USER_ID:-coder}" /etc/passwd > $NSS_WRAPPER_PASSWD
     echo "${USER_NAME:-coder}:x:${USER_ID}:0:${USER_NAME:-coder} user:${HOME}:/bin/bash" >> $NSS_WRAPPER_PASSWD
 
-    export NSS_WRAPPER_PASSWD
-    export LD_PRELOAD
+    if [ -w /etc/passwd ]; then
+        cat $NSS_WRAPPER_PASSWD > /etc/passwd
+    else
+        echo "fix: nss_wrapper config"
+        if [ -e /usr/lib/x86_64-linux-gnu/libnss_wrapper.so ]; then
+            LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libnss_wrapper.so
+        else
+            LD_PRELOAD=/usr/lib64/libnss_wrapper.so
+        fi
+        
+        # use nss passwd
+        if [ x"${USER_ID}" != x"0" -a x"${USER_ID}" != x"1001" ]; then
+            export LD_PRELOAD
+            export NSS_WRAPPER_PASSWD
+        fi
+    fi
 fi
 
 # fix: node CA trust defaults for requests / node
