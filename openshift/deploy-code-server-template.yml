@@ -30,22 +30,22 @@ parameters:
   displayName: Code Server Memory Limit
   value: 1792Mi
   required: true
-  description: Consider the Pod Quota Limits on Your namespace
+  description: Consider the pod quota limits on your namespace
 - name: CODE_SERVER_CPU_LIMIT
   displayName: Code Server CPU Limit
   value: 1700m
   required: true
-  description: Consider the Pod Quota Limits on Your namespace
+  description: Consider the pod quota limits on your namespace
 - name: WEBDAV_MEM_LIMIT
   displayName: WebDav Memory Limit
   value: 256M
   required: true
-  description: Consider the Pod Quota Limits on Your namespace
+  description: Consider the pod quota limits on your namespace
 - name: WEBDAV_CPU_LIMIT
   displayName: WebDav CPU Limit
   value: 300m
   required: true
-  description: Consider the Pod Quota Limits on Your namespace
+  description: Consider the pod quota limits on your namespace
 - name: CODE_SERVER_PASSWORD
   displayName: Code Server Password
   from: "[A-Za-z0-9]{32}"

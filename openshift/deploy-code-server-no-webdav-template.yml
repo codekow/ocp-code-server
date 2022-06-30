@@ -28,14 +28,14 @@ parameters:
   required: true
 - name: CODE_SERVER_MEM_LIMIT
   displayName: Code Server Memory Limit
-  value: 2Gi
+  value: 1792Mi
   required: true
-  description: Consider the Pod Quota Limits on Your namespace
+  description: Consider the pod quota limits on your namespace
 - name: CODE_SERVER_CPU_LIMIT
   displayName: Code Server CPU Limit
-  value: 2000m
+  value: 1700m
   required: true
-  description: Consider the Pod Quota Limits on Your namespace
+  description: Consider the pod quota limits on your namespace
 - name: CODE_SERVER_PASSWORD
   displayName: Code Server Password
   from: "[A-Za-z0-9]{32}"
@@ -54,6 +54,18 @@ objects:
       app: "${APPLICATION_NAME}"
       app.kubernetes.io/name: "${APPLICATION_NAME}"
     name: "${APPLICATION_NAME}"
+  spec:
+    lookupPolicy:
+      local: true
+    tags:
+    - name: base
+      from:
+        kind: DockerImage
+        name: ${CODE_SERVER_IMAGE}
+      importPolicy:
+        scheduled: true
+      referencePolicy:
+        type: Source
 - apiVersion: build.openshift.io/v1
   kind: BuildConfig
   metadata:
@@ -74,9 +86,9 @@ objects:
         USER root
 
         # install your own customizations here
-        # RUN dnf update -y && \
-        #     dnf -y install awesome-tool && \
-        #     dnf clean all
+        # RUN apt-get update && \
+        #     apt-get -y install --no-install-recommends awesome-tool && \
+        #     rm -rf /var/lib/apt/lists/*
 
         USER 1001
 
@@ -84,11 +96,16 @@ objects:
     strategy:
       dockerStrategy:
         from:
-          kind: DockerImage
-          name: '${CODE_SERVER_IMAGE}'
+          kind: ImageStreamTag
+          name: '${APPLICATION_NAME}:base'
       type: Docker
     successfulBuildsHistoryLimit: 5
     triggers:
+      - type: ImageChange
+        imageChange:
+          from:
+            kind: ImageStreamTag
+            name: '${APPLICATION_NAME}:base'
       - type: ConfigChange
 - kind: Secret
   apiVersion: v1
@@ -99,9 +116,8 @@ objects:
       app: "${APPLICATION_NAME}"
       app.kubernetes.io/name: "${APPLICATION_NAME}"
     annotations:
-      openshift.io/documentation-url: "https://github.com/codekow/ocp-code-server"
-      openshift.io/support-url: >-
-        https://github.com/codekow/ocp-code-server/issues
+      openshift.io/documentation-url: https://github.com/codekow/ocp-code-server
+      openshift.io/support-url: https://github.com/codekow/ocp-code-server/issues
   stringData:
     password: ${CODE_SERVER_PASSWORD}
     username: coder
@@ -145,7 +161,7 @@ objects:
       spec:
         containers:
           - name: custom-code-server
-            image: ' '
+            image: ${APPLICATION_NAME}:latest
             imagePullPolicy: Always
             env:
               - name: PASSWORD
@@ -176,14 +192,11 @@ objects:
               limits:
                 cpu: ${CODE_SERVER_CPU_LIMIT}
                 memory: ${CODE_SERVER_MEM_LIMIT}
-              requests:
-                cpu: 750m
-                memory: 512Mi
             volumeMounts:
               - mountPath: /home/coder
-                name: vol-vscode
+                name: coder-home
         volumes:
-          - name: vol-vscode
+          - name: coder-home
             persistentVolumeClaim:
               claimName: "${APPLICATION_NAME}-data"
     triggers:
