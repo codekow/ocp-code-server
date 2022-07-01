@@ -170,8 +170,8 @@ objects:
     resources:
       requests:
         storage: "${VOLUME_SIZE}"
-- kind: DeploymentConfig
-  apiVersion: apps.openshift.io/v1
+- kind: Deployment
+  apiVersion: apps/v1
   metadata:
     name: ${APPLICATION_NAME}
     labels:
@@ -183,14 +183,16 @@ objects:
   spec:
     replicas: 1
     selector:
-      app: ${APPLICATION_NAME}
+      matchLabels:
+        app: ${APPLICATION_NAME}
+        deployment: ${APPLICATION_NAME}
     strategy:
       type: Recreate
     template:
       metadata:
         labels:
           app: ${APPLICATION_NAME}
-          deploymentconfig: ${APPLICATION_NAME}
+          deployment: ${APPLICATION_NAME}
       spec:
         containers:
           - name: custom-code-server
@@ -304,7 +306,7 @@ objects:
       targetPort: 8080
     selector:
       app: ${APPLICATION_NAME}
-      deploymentconfig: ${APPLICATION_NAME}
+      deployment: ${APPLICATION_NAME}
 - kind: Route
   apiVersion: route.openshift.io/v1
   metadata:
