@@ -6,15 +6,15 @@ LABEL=${LABEL:-"testing=true"}
 cd "$(dirname "$0")" || exit 1
 
 build_codercom(){
-TEMPLATE=../openshift/build/build-code-server-base-codercom-template.yml
+TEMPLATE=../openshift/build/build-code-server-codercom-base-template.yml
 oc process -f ${TEMPLATE} -p BUILD_REF="${BUILD_REF:-main}" -l "${LABEL}" | oc apply -f -
 
-TEMPLATE=../openshift/build/build-code-server-dockerfile-codercom-patch.yml
+TEMPLATE=../openshift/build/build-code-server-codercom-dockerfile-patch.yml
 oc apply -f ${TEMPLATE}
 }
 
 build_ubi(){
-TEMPLATE=../openshift/build/build-code-server-ubi-template.yml
+TEMPLATE=../openshift/build/build-code-server-ubi-base-template.yml
 oc process -f ${TEMPLATE} -p BUILD_REF="${BUILD_REF:-main}" -l "${LABEL}" | oc apply -f -
 }
 
@@ -27,6 +27,6 @@ curl -sL ${WEBDAV_IMAGE} | oc apply -f -
 curl -sL ${WEBDAV_BUILD} | oc apply -f -
 }
 
-build_codercom
-#build_ubi
+#build_codercom
+build_ubi
 build_webdev

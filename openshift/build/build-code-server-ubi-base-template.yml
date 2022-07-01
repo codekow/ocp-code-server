@@ -78,7 +78,7 @@ objects:
       docker.io/source: "${DOCKER_IMAGE_BASE}"
     labels:
       build: ${APPLICATION_NAME}
-    name: code-server
+    name: ubi
   spec:
     lookupPolicy:
       local: false
@@ -117,7 +117,7 @@ objects:
         dockerfilePath: ${DOCKERFILE}
         from:
           kind: ImageStreamTag
-          name: "code-server:${DOCKER_IMAGE_TAG}"
+          name: "ubi:${DOCKER_IMAGE_TAG}"
       type: Docker
     triggers:
     - type: ConfigChange

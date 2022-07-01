@@ -4,7 +4,7 @@ metadata:
   labels:
     app: custom-code-server
     build: custom-code-server
-  name: custom-code-server-dockerfile-codercom-patch
+  name: custom-code-server-codercom-dockerfile-patch
 spec:
   runPolicy: SerialLatestOnly
   strategy:
