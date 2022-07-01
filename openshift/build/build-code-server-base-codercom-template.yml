@@ -77,6 +77,7 @@ objects:
     annotations:
       docker.io/source: "docker.io/codercom/code-server:${DOCKER_IMAGE_TAG}"
     labels:
+      app: ${APPLICATION_NAME}
       build: ${APPLICATION_NAME}
     name: code-server
   spec:
@@ -95,6 +96,7 @@ objects:
   apiVersion: build.openshift.io/v1
   metadata:
     labels:
+      app: ${APPLICATION_NAME}
       build: ${APPLICATION_NAME}
       app.kubernetes.io/instance: code-server
     name: ${APPLICATION_NAME}-codercom-base
