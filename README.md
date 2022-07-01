@@ -54,13 +54,13 @@ TODO
 
 ```
 # Docker / Podman
-. hacks/local_docker_build.sh
+. setup/local_docker_build.sh
 code_server_build codercom
 code_server_build ubi8
 
 # OpenShift
-hacks/local_ocp_build_ubi8.sh
-hacks/local_ocp_build_codercom.sh
+setup/local_ocp_build_ubi8.sh
+setup/local_ocp_build_codercom.sh
 ```
 
 This repo contains Dockerfiles to build this code server image. 
