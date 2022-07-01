@@ -24,8 +24,8 @@ Deploy a Custom Code Server (w/ custom build)
 
 `Add to Project` => `Import YAML / JSON`
 
-* [deploy-code-server-no-webdav-template.yml](openshift/deploy-code-server-no-webdav-template.yml).
-* [deploy-code-server-template.yml](openshift/deploy-code-server-template.yml).
+* [deploy-code-server-no-webdav-template.yml](openshift/deploy-code-server-no-webdav-template.yml)
+* [deploy-code-server-template.yml](openshift/deploy-code-server-template.yml)
 
 
 ### Demo Route
@@ -37,7 +37,6 @@ Run the following in the terminal of code server:
 
 ```sh
 # basic python example
-
 python -m http.server 8080
 ```
 
