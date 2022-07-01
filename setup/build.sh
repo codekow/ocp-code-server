@@ -24,6 +24,6 @@ curl -sL ${WEBDAV_IMAGE} | oc apply -f -
 curl -sL ${WEBDAV_BUILD} | oc apply -f -
 }
 
-#build_codercom
+build_codercom
 build_ubi
 build_webdev
