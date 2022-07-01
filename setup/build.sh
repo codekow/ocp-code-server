@@ -6,7 +6,7 @@ LABEL=${LABEL:-"testing=true"}
 cd "$(dirname "$0")" || exit 1
 
 build_codercom(){
-TEMPLATE=../openshift/build/build-code-server-codercom-base-template.yml
+TEMPLATE=../openshift/build/build-code-server-codercom-template.yml
 oc process -f ${TEMPLATE} -p BUILD_REF="${BUILD_REF:-main}" -l "${LABEL}" | oc apply -f -
 }
 
