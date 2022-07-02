@@ -174,8 +174,6 @@ objects:
                 protocol: TCP
               - containerPort: 8000
                 protocol: TCP
-              - containerPort: 8050
-                protocol: TCP
               - containerPort: 8080
                 protocol: TCP
             readinessProbe:
