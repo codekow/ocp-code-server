@@ -1,6 +1,7 @@
 #!/bin/bash
 
 VERSION_TAG=4.4.0
+CODE_LABEL='testing=true'
 
 # import container image streams
 init_image_stream(){
@@ -27,7 +28,8 @@ oc patch bc custom-code-server-codercom-base \
 
 oc start-build \
   custom-code-server-codercom-base \
-  --from-dir container/base
+  --from-dir container/base \
+  --follow
 }
 
 # build - patch
