@@ -220,17 +220,9 @@ objects:
       protocol: TCP
       port: 1337
       targetPort: 1337
-    - name: 8000-tcp
-      protocol: TCP
-      port: 8000
-      targetPort: 8000
     - name: 1338-tcp
       port: 1338
       targetPort: 1338
-    - name: 8050-tcp
-      protocol: TCP
-      port: 8050
-      targetPort: 8050
     - name: 8080-tcp
       protocol: TCP
       port: 8080
