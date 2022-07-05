@@ -49,7 +49,7 @@ RUN apt-get update && \
 COPY bin /usr/local/bin
 
 # expose: ports for local app / s2i
-EXPOSE 1337 8000 8050 8080
+EXPOSE 1337 8080
 
 USER coder
 

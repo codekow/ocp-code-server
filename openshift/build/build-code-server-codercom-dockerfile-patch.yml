@@ -2,8 +2,8 @@ apiVersion: build.openshift.io/v1
 kind: BuildConfig
 metadata:
   labels:
-    build: custom-code-server
-  name: custom-code-server-dockerfile-codercom-patch
+    build: custom-code-server-codercom
+  name: custom-code-server-codercom-dockerfile-patch
 spec:
   runPolicy: SerialLatestOnly
   strategy:

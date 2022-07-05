@@ -66,6 +66,7 @@ objects:
   apiVersion: image.openshift.io/v1
   metadata:
     labels:
+      app: ${APPLICATION_NAME}
       build: ${APPLICATION_NAME}-codercom
     name: ${APPLICATION_NAME}
   spec:
@@ -75,9 +76,10 @@ objects:
   apiVersion: image.openshift.io/v1
   metadata:
     annotations:
-      docker.io/source: "docker.io/codercom/code-server:${DOCKER_IMAGE_TAG}"
+      docker.io/source: "${DOCKER_IMAGE_BASE}"
     labels:
-      build: ${APPLICATION_NAME}
+      app: ${APPLICATION_NAME}
+      build: ${APPLICATION_NAME}-codercom
     name: code-server
   spec:
     lookupPolicy:
@@ -95,8 +97,8 @@ objects:
   apiVersion: build.openshift.io/v1
   metadata:
     labels:
-      build: ${APPLICATION_NAME}
-      app.kubernetes.io/instance: code-server
+      app: ${APPLICATION_NAME}
+      build: ${APPLICATION_NAME}-codercom
     name: ${APPLICATION_NAME}-codercom-base
     annotations:
       app.openshift.io/vcs-ref: ${BUILD_REF}
@@ -121,8 +123,46 @@ objects:
         dockerfilePath: ${DOCKERFILE}
         from:
           kind: ImageStreamTag
-          name: "code-server:latest"
+          name: "code-server:${DOCKER_IMAGE_TAG}"
       type: Docker
     triggers:
     - type: ConfigChange
     - type: ImageChange
+- kind: BuildConfig
+  apiVersion: build.openshift.io/v1
+  metadata:
+    labels:
+      app: ${APPLICATION_NAME}
+      build: ${APPLICATION_NAME}-codercom
+    name: ${APPLICATION_NAME}-codercom-patch
+  spec:
+    runPolicy: SerialLatestOnly
+    strategy:
+      dockerStrategy:
+        from:
+          kind: ImageStreamTag
+          name: ${APPLICATION_NAME}:codercom-base
+      type: Docker
+    output:
+      to:
+        kind: ImageStreamTag
+        name: ${APPLICATION_NAME}:latest
+    triggers:
+      - imageChange:
+        type: ImageChange
+      - type: ConfigChange
+    source:
+      type: dockerfile
+      dockerfile: |
+        FROM scratch
+
+        USER root
+
+        # install your own customizations here
+        # RUN apt update -y && \
+        #     apt -y install awesome-tool && \
+        #     apt clean all
+        
+        USER 1001
+  status:
+    lastVersion: 1336

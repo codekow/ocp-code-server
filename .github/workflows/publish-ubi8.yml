@@ -56,7 +56,7 @@ jobs:
 
       - name: kludge - build ubi8
         run: |
-          . hacks/local_docker_build.sh
+          . setup/local_docker_build.sh
           code_server_build ubi8
 
       - name: kludge - push ubi8

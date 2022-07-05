@@ -66,6 +66,7 @@ objects:
   apiVersion: image.openshift.io/v1
   metadata:
     labels:
+      app: ${APPLICATION_NAME}
       build: ${APPLICATION_NAME}-ubi
     name: ${APPLICATION_NAME}
   spec:
@@ -77,8 +78,9 @@ objects:
     annotations:
       docker.io/source: "${DOCKER_IMAGE_BASE}"
     labels:
-      build: ${APPLICATION_NAME}
-    name: code-server
+      app: ${APPLICATION_NAME}
+      build: ${APPLICATION_NAME}-ubi
+    name: ubi
   spec:
     lookupPolicy:
       local: false
@@ -91,8 +93,8 @@ objects:
   apiVersion: build.openshift.io/v1
   metadata:
     labels:
-      build: ${APPLICATION_NAME}
-      app.kubernetes.io/instance: code-server
+      app: ${APPLICATION_NAME}
+      build: ${APPLICATION_NAME}-ubi
     name: ${APPLICATION_NAME}-ubi-base
     annotations:
       app.openshift.io/vcs-ref: ${BUILD_REF}
@@ -117,7 +119,7 @@ objects:
         dockerfilePath: ${DOCKERFILE}
         from:
           kind: ImageStreamTag
-          name: "code-server:${DOCKER_IMAGE_TAG}"
+          name: "ubi:${DOCKER_IMAGE_TAG}"
       type: Docker
     triggers:
     - type: ConfigChange
@@ -126,7 +128,8 @@ objects:
   apiVersion: build.openshift.io/v1
   metadata:
     labels:
-      build: custom-code-server
+      app: ${APPLICATION_NAME}
+      build: ${APPLICATION_NAME}-ubi
     name: ${APPLICATION_NAME}-ubi-patch
   spec:
     runPolicy: SerialLatestOnly
@@ -157,3 +160,5 @@ objects:
         #     dnf clean all
         
         USER 1001
+  status:
+    lastVersion: 1336
