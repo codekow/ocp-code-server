@@ -1,4 +1,4 @@
-FROM docker.io/codercom/code-server:4.4.0
+FROM docker.io/codercom/code-server:4.7.0
 
 # https://github.com/opencontainers/image-spec/blob/main/annotations.md
 LABEL name="custom-code-server" \
