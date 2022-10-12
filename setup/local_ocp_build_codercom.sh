@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION_TAG=4.4.0
+VERSION_TAG=4.5.0
 CODE_LABEL='testing=true'
 
 # import container image streams
