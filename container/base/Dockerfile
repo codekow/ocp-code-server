@@ -1,1 +1,68 @@
-Dockerfile.ubi8
+FROM registry.access.redhat.com/ubi8/ubi:8.7-1054.1675788412
+
+# https://github.com/opencontainers/image-spec/blob/main/annotations.md
+LABEL name="custom-code-server" \
+      maintainer="koree@redhat.com" \
+      version="4.5.0" \
+      summary="Custom Code Server" \
+      org.opencontainers.image.description.vendor="codercom" \
+      org.opencontainers.image.description="Custom Code Server base image with a basic collection of tools" \
+      org.opencontainers.image.source="https://github.com/codekow/code-server" \
+      description="Custom Code Server base image with a basic collection of tools" \
+      io.k8s.description="Custom Code Server base image with a basic collection of tools"
+
+ARG CODE_SERVER_VERSION
+
+# bug: hadolint doesn't see user below
+# hadolint ignore=DL3002
+USER root
+
+# setup: coder user
+RUN mkdir /home/coder && \
+    chgrp -R 0 /home/coder && \
+    chmod -R g=u /home/coder
+
+# install: code-server
+RUN rpm -ivh https://github.com/cdr/code-server/releases/download/v${CODE_SERVER_VERSION:-4.5.0}/code-server-${CODE_SERVER_VERSION:-4.5.0}-amd64.rpm
+
+# install: oc
+ENV OC4_VERSION="4.8.10"
+ARG OC4_HASH="9d727adc9438bb7431344a7349ee88fbf05b5dbb856e678013a15c084b72cc9d"
+ARG OC4_URL="https://mirror.openshift.com/pub/openshift-v4/x86_64/clients/ocp/${OC4_VERSION}/openshift-client-linux.tar.gz"
+
+RUN curl -sL "${OC4_URL}" -o oc.tgz && \
+    sha256sum < oc.tgz && \
+    [ "$OC4_HASH  -" = "$(sha256sum < oc.tgz)" ] && \
+    echo "OC4_HASH: PASSED" && \
+    tar -C /usr/local/bin -zxf oc.tgz oc && \
+    mv /usr/local/bin/oc /usr/local/bin/oc-${OC4_VERSION%.*} && \
+    /usr/local/bin/oc-${OC4_VERSION%.*} completion bash > /etc/bash_completion.d/oc-${OC4_VERSION%.*} && \
+    rm oc.tgz && \
+    ln -s /usr/local/bin/oc-wrapper.sh /usr/local/bin/oc
+
+# install: skopeo
+# hadolint ignore=DL3008
+RUN dnf -y install skopeo nss_wrapper && \
+    dnf clean all && \
+    rm -rf /var/cache /var/log/dnf* /var/log/yum.*
+
+# install: entrypoint and other scripts
+COPY bin /usr/local/bin
+
+# expose: ports for local app / s2i
+EXPOSE 1337 8080
+
+USER coder
+
+ENV HOME=/home/coder
+
+WORKDIR /home/coder
+VOLUME /home/coder
+
+# HEALTHCHECK --interval=30s \
+#             --timeout=60s \
+#             --retries=3 \
+#   CMD curl -sf http://127.0.0.1:1337 || exit 1
+
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+CMD ["code-server", "--bind-addr", "0.0.0.0:1337", ".", "--disable-telemetry"]
