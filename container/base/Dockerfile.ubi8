@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi8/ubi:8.6
+FROM registry.access.redhat.com/ubi8/ubi:8.7-1090
 
 # https://github.com/opencontainers/image-spec/blob/main/annotations.md
 LABEL name="custom-code-server" \
